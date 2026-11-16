@@ -1,0 +1,7 @@
+# Build dos dados e testes (GitHub Actions e local).
+-r requirements.txt
+pyarrow==26.0.1
+httpx==0.28.1
+openpyxl==3.1.5
+pytest==9.2.0
+uvicorn==0.54.0

@@ -1,0 +1,3 @@
+# Runtime da função na Vercel (só o que a API usa).
+fastapi==0.163.1
+duckdb==2.0.0

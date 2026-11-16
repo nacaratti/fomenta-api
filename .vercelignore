@@ -1,0 +1,8 @@
+# O deploy leva só a API, o banco e as respostas estáticas.
+build/cache/
+build/parquet/
+data/
+tests/
+tools/
+pipeline/
+.github/

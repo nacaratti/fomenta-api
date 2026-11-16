@@ -1,0 +1,40 @@
+{
+  "builds": [
+    {
+      "src": "api/index.py",
+      "use": "@vercel/python",
+      "config": { "includeFiles": ["build/fomenta.duckdb", "build/manifest.json"] }
+    },
+    { "src": "build/static/**", "use": "@vercel/static" }
+  ],
+  "routes": [
+    {
+      "src": "/v1/investimentos/financiadores/?",
+      "dest": "/build/static/v1/investimentos/financiadores.json",
+      "headers": {
+        "Content-Type": "application/json; charset=utf-8",
+        "Cache-Control": "public, s-maxage=86400, stale-while-revalidate=604800",
+        "Access-Control-Allow-Origin": "*"
+      }
+    },
+    {
+      "src": "/v1/investimentos/financiadores/(finep|capes|cnpq)/?",
+      "dest": "/build/static/v1/investimentos/financiadores/$1.json",
+      "headers": {
+        "Content-Type": "application/json; charset=utf-8",
+        "Cache-Control": "public, s-maxage=86400, stale-while-revalidate=604800",
+        "Access-Control-Allow-Origin": "*"
+      }
+    },
+    {
+      "src": "/v1/meta/?",
+      "dest": "/build/static/v1/meta.json",
+      "headers": {
+        "Content-Type": "application/json; charset=utf-8",
+        "Cache-Control": "public, s-maxage=86400, stale-while-revalidate=604800",
+        "Access-Control-Allow-Origin": "*"
+      }
+    },
+    { "src": "/(.*)", "dest": "/api/index.py" }
+  ]
+}

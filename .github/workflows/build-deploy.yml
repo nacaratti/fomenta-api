@@ -1,0 +1,62 @@
+name: build-deploy
+
+# Monta o fomenta.duckdb a partir das fontes oficiais, publica os dados numa
+# Release e faz o deploy da API na Vercel (conta própria da API).
+on:
+  schedule:
+    - cron: "0 9 * * 1"   # segunda, 06:00 em Brasília (a FINEP atualiza toda semana)
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ["data/**", "pipeline/**", "api/**", "vercel.json", "requirements*.txt"]
+
+permissions:
+  contents: write   # criar a Release de dados
+
+concurrency:
+  group: build-deploy
+  cancel-in-progress: false
+
+jobs:
+  build-deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: requirements-pipeline.txt
+
+      - run: pip install -r requirements-pipeline.txt
+
+      - name: Testes
+        run: python -m pytest -q
+
+      - name: Build dos dados (baixa FINEP e CAPES)
+        run: python -m pipeline.build
+
+      - name: Release de dados
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          TAG="dados-$(date -u +%Y-%m-%d)"
+          FILES="build/fomenta.duckdb build/manifest.json build/parquet/*.parquet"
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            gh release upload "$TAG" $FILES --clobber
+          else
+            gh release create "$TAG" $FILES --title "Dados de $(date -u +%d/%m/%Y)" \
+              --notes "Gerado pelo build-deploy. Posição de cada fonte em manifest.json."
+          fi
+
+      - name: Deploy na Vercel
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+        run: |
+          npm install --global vercel@latest
+          vercel pull --yes --environment=production --token="$VERCEL_TOKEN"
+          vercel deploy --prod --token="$VERCEL_TOKEN"

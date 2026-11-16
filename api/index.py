@@ -1,0 +1,121 @@
+"""Fomenta API — API pública e somente leitura sobre o `fomenta.duckdb` gerado no build.
+
+Na Vercel, as rotas fixas (`/v1/investimentos/financiadores`, `/financiadores/{id}`
+e `/v1/meta`) saem como JSON estático do build (ver `vercel.json`) e nem chegam
+aqui; esta função atende as rotas com filtro. Localmente (`uvicorn api.index:app`)
+todas as rotas passam por aqui.
+"""
+from __future__ import annotations
+
+import sys
+from collections import defaultdict
+from datetime import datetime, timedelta, timezone
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+
+from fastapi import APIRouter, FastAPI, HTTPException, Query, Request, Response  # noqa: E402
+from fastapi.middleware.cors import CORSMiddleware  # noqa: E402
+from fastapi.responses import RedirectResponse  # noqa: E402
+
+from api import queries  # noqa: E402
+
+DESCRIPTION = """
+Dados abertos do **Fomenta** sobre fomento à pesquisa no Brasil. Nesta versão: **investimentos em PD&I**
+da FINEP, da CAPES (PROAP/PROEX) e do CNPq (bolsas e auxílios), ligados às instituições do cadastro do PNIPE.
+
+- Valores **nominais**, em reais, sem correção pela inflação.
+- Cada financiador conta de um jeito (a FINEP traz projetos e liberações; CAPES e CNPq, o valor pago no ano).
+  **Não some financiadores diferentes**: parte do FNDCT passa por mais de uma fonte.
+- `data_as_of` é a posição informada pela própria fonte; `imported_at`, quando o Fomenta importou.
+- Os dados completos (DuckDB e Parquet) ficam nas Releases do repositório, para análise offline.
+"""
+CACHE = "public, s-maxage=86400, stale-while-revalidate=604800"  # o dado só muda a cada deploy
+RATE_LIMIT = 120  # requisições por minuto, por IP e por instância (defesa leve)
+
+app = FastAPI(title="Fomenta API", version="1.0.0", description=DESCRIPTION,
+              docs_url="/v1/docs", redoc_url=None, openapi_url="/v1/openapi.json")
+app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["GET"], allow_headers=["*"])
+
+_hits: dict[str, list[datetime]] = defaultdict(list)
+
+
+def _client_ip(request: Request) -> str:
+    return ((request.headers.get("x-real-ip") or "").strip()
+            or (request.headers.get("x-forwarded-for") or "").split(",")[0].strip()
+            or (request.client.host if request.client else "unknown"))
+
+
+def _guard(request: Request, response: Response) -> None:
+    ip, now = _client_ip(request), datetime.now(timezone.utc)
+    recent = [t for t in _hits[ip] if t >= now - timedelta(minutes=1)]
+    if len(recent) >= RATE_LIMIT:
+        _hits[ip] = recent
+        raise HTTPException(429, "Muitas requisições. Tente de novo em alguns instantes.", headers={"Retry-After": "60"})
+    _hits[ip] = [*recent, now]
+    response.headers["Cache-Control"] = CACHE
+
+
+investimentos = APIRouter(prefix="/v1/investimentos", tags=["Investimentos"])
+instituicoes = APIRouter(prefix="/v1/instituicoes", tags=["Instituições"])
+
+
+@app.get("/", include_in_schema=False)
+def root() -> RedirectResponse:
+    return RedirectResponse("/v1/docs")
+
+
+@app.get("/v1/meta", tags=["Sobre os dados"], summary="Posição de cada fonte e arquivos do build")
+def meta(request: Request, response: Response) -> dict:
+    _guard(request, response)
+    return queries.meta()
+
+
+@investimentos.get("/financiadores", summary="Financiadores disponíveis")
+def funders(request: Request, response: Response) -> dict:
+    """Totais (aprovado, pago, nº de registros, anos) e a posição dos dados de cada financiador."""
+    _guard(request, response)
+    return {"items": queries.list_funders()}
+
+
+@investimentos.get("/financiadores/{funder_id}", summary="Resumo de um financiador")
+def funder(funder_id: str, request: Request, response: Response) -> dict:
+    """Totais por ano, instrumento, situação, UF e região, e o ranking de instituições."""
+    _guard(request, response)
+    data = queries.get_funder(funder_id.lower())
+    if data is None:
+        raise HTTPException(404, "Financiador não encontrado.")
+    return data
+
+
+@investimentos.get("/projetos", summary="Projetos e concessões")
+def awards(
+    request: Request, response: Response,
+    financiador: str | None = Query(None, description="finep, capes ou cnpq"),
+    ano: int | None = Query(None, ge=1990, le=2100, description="ano de assinatura/concessão"),
+    uf: str | None = Query(None, min_length=2, max_length=2, description="sigla da UF"),
+    instrumento: str | None = Query(None, max_length=200, description="rótulo exato, como em /financiadores/{id}"),
+    cnpj: str | None = Query(None, max_length=20, description="CNPJ de uma instituição do PNIPE"),
+    q: str | None = Query(None, min_length=3, max_length=80, description="busca no título e nos nomes"),
+    page: int = Query(1, ge=1, le=2000),
+    per_page: int = Query(25, ge=1, le=queries.MAX_PER_PAGE),
+) -> dict:
+    """Ordenados pelo valor aprovado, do maior para o menor. `detail` traz o que é próprio de cada fonte
+    (modalidades e origem do recurso no CNPq; custeio/capital e programa de pós na CAPES)."""
+    _guard(request, response)
+    return queries.list_awards(funder=financiador.lower() if financiador else None, year=ano, uf=uf,
+                               instrument=instrumento, cnpj=cnpj, q=q, page=page, per_page=per_page)
+
+
+@instituicoes.get("/{cnpj}/investimentos", summary="Investimentos recebidos por uma instituição")
+def institution(cnpj: str, request: Request, response: Response) -> dict:
+    """Por financiador e por ano, para uma instituição do cadastro do PNIPE (CNPJ com os 14 números)."""
+    _guard(request, response)
+    data = queries.institution_investments(cnpj)
+    if data is None:
+        raise HTTPException(404, "Instituição não encontrada no cadastro do PNIPE.")
+    return data
+
+
+app.include_router(investimentos)
+app.include_router(instituicoes)

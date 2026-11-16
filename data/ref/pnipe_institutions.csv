@@ -1,0 +1,672 @@
+cnpj,social_reason,initials,state,city
+00038174000143,Universidade de Brasília,UNB,DF,Brasília
+00326036000160,Faculdade de Medicina de São José do Rio Preto,FAMERP,SP,São José do Rio Preto
+00331801000130,UNIVERSIDADE CATÓLICA DE BRASÍLIA,UCB,DF,Brasília
+00331801000482,UNIÃO BRASILEIRA DE EDUCAÇÃO CATÓLICA,UBEC,DF,Brasília
+00348003000110,Empresa Brasileira de Pesquisa Agropecuária,EMBRAPA,DF,Brasília
+00348003001192,Empresa Brasileira de Pesquisa Agropecuária - EMBRAPA CTAA,EMBRAPA/CTAA,RJ,Rio de Janeiro
+00348003001273,Embrapa Solos,CNPS,RJ,Rio de Janeiro
+00348003001354,Empresa Brasileira de Pesquisa Agropecuária - Embrapa Gado de Leite,CNPGL,MG,Juiz de Fora
+00348003001435,EMBRAPA ARROZ E FEIJÃO,CNPAF,GO,Santo Antônio de Goiás
+00348003001869,Centro de Pesquisa Agropecuária de Mato Grosso,CPAMT,MT,Sinop
+00348003001940,"Centro Nacional de Pesquisa em Pesca, Aquicultura e Sistemas Agrícolas",CNPASA,TO,Palmas
+00348003002245,Centro de Pesquisa Agropecuária de Cocais e Planícies Inundáveis,CPACP,MA,São Luís
+00348003002911,Centro Nacional de Pesquisa de Milho e Sorgo,CNPMS,,
+00348003003640,Centro de Pesquisa Agropecuária do Pantanal,CPAP,MS,Corumba
+00348003003802,Embrapa Recursos Genéticos e Biotecnologia,Embrapa Cenargen,DF,Brasília
+00348003003993,Embrapa - CPAC,CPAC,DF,Brasília
+00348003004108,Centro de Pesquisa Agropecuária do Trópico Semiárido,CPATSA,PE,Petrolina
+00348003004299,Centro Nacional de Pesquisa de Soja,Embrapa Soja,PR,Londrina
+00348003004450,Centro Nacional de Pesquisa de Algodão,CNPA,PB,Campina Grande
+00348003004531,Centro Nacional de Pesquisa de Mandioca e Fruticultura Tropical,CNPMF,BA,Cruz das Almas
+00348003005260,Embrapa Pecuária Sul,CPPSul,RS,Bagé
+00348003005422,Embrapa Pecuária Sudeste,CPPSE,SP,São Carlos
+00348003005503,Centro Nacional de Pesquisa de Hortaliças,cnph,,
+00348003006402,Centro de Pesquisa Agroflorestal de Rondônia,CPAFRO,RO,Porto Velho
+00348003006585,Embrapa Suínos e Aves,CNPSA,SC,Concórdia
+00348003006828,Embrapa Acre,CPAF-AC,AC,Rio Branco
+00348003007204,Embrapa Caprinos e Ovinos,CNPC,CE,Sobral
+00348003008952,EMBRAPA FLORESTAS,CNPF,PR,Colombo
+00348003010000,EMBRAPA AMAPÁ,CPAF-AP,AP,Macapá
+00348003010183,Centro de Pesquisa Agroflorestal de Roraima,CPAF-RR,RR,Boa Vista
+00348003010507,CNPMA - Centro Nacional de Pesquisa de Monitoramento e Avaliação de Impacto Ambiental (Embrapa Meio Ambiente ),CNPMA,SP,Jaguariúna
+00348003010850,EMPRESA BRASILEIRA DE PESQUISA AGROPECUÁRIA - EMBRAPA - CENTRO NACIONAL DE PESQUISA DE AGROBIOLOGIA - CNPAB (EMBRAPA AGROBIOLOGIA),CNPAB,RJ,Rio de Janeiro
+00348003012208,"Centro Nacional de Pesquisa em Inteligência, Gestão e Monitoramento Territorial",Embrapa Territorial,SP,Campinas
+00348003012399,Empresa Brasileira de Pesquisa Agropecuária - Embrapa,CPAA,AM,Manaus
+00348003012801,Empresa Brasileira de Pesquisa Agropecuária,CPATU,PA,Belém
+00348003013360,Centro de Pesquisa Agropecuária do Meio-Norte,CPAMN,PI,Teresina
+00394429004440,Departamento de Ciência e Tecnologia Aeroespacial,DCTA,SP,São José dos Campos
+00394429007709,Instituto de Logística da Aeronáutica,ILA,SP,Guarulhos
+00394429009833,Centro de Lançamento da Barreira do Inferno,CLBI,RN,Parnamirim
+00394429009914,Laboratório Químico-Farmacêutico da Aeronáutica,LAQFA,RJ,Rio de Janeiro
+00394429010840,INSTITUTO DE CONTROLE DO ESPAÇO AÉREO,ICEA,SP,São José dos Campos
+00394429012460,Centro de Lançamento de Alcântara,CLA,MA,Alcântara
+00394429014080,Instituto de Aeronáutica e Espaço,IAE,SP,São José dos Campos
+00394429014160,Instituto de Estudos Avançados,IEAv,SP,São José dos Campos
+00394429014241,Instituto de Fomento e Coordenação Industrial,IFI,SP,São José dos Campos
+00394429014403,Instituto Tecnológico de Aeronáutica,ITA,SP,São José dos Campos
+00394429015647,Centro de Computação da Aeronáutica de São José dos Campos,CCA-SJ,SP,São José dos Campos
+00394429016023,Instituto de Medicina Aeroespacial,IMAE,RJ,Rio de Janeiro
+00394429016538,Instituto de Pesquisas e Ensaios em Voo,IPEV,SP,São José dos Campos
+00394445027212,Instituto Benjamin Constant,IBC,,
+00394445037528,Escola de Belas Artes - UFMG,EBA,MG,Belo Horizonte
+00394452046782,Comando de Comunicações e Guerra Eletrônica,CCOMGEX,,
+00394502011421,Centro Tecnológico do Corpo de Fuzileiros Navais,CTecCFN,RJ,Rio de Janeiro
+00394502012665,ESCOLA DE GUERRA NAVAL,EGN,,
+00394502012908,Centro de Educação Física Almirante Adalberto Nunes,CEFAN,,
+00394502043110,Centro de Análises de Sistemas Navais,CASNAV,RJ,Rio de Janeiro
+00394502052888,Diretoria de Desenvolvimento Nuclear da Marinha,DDNM,SP,São Paulo
+00394544002200,CENTRO NACIONAL DE PRIMATAS,CENP,,
+00394544002552,Ministério da Saúde,MS,PA,Ananindeua
+00394544017150,Instituto Nacional de Câncer José Alencar Gomes da Silva,INCA,RJ,Rio de Janeiro
+00394544021263,Instituto Nacional de Traumatologia e Ortopedia,INTO,RJ,Rio de Janeiro
+00394544021344,Instituto Nacional de Cardiologia,INC,RJ,Rio de Janeiro
+00396895004546,Laboratório Federal de Defesa Agropecuária no RS,LFDA-RS,RS,Porto Alegre
+00396895008886,COMISSÃO EXECUTIVA DO PLANO DA LAVOURA CACAUEIRA,CEPLAC,DF,BRASILIA
+00402552000126,Comissão Nacional de Energia Nuclear,CNEN,RJ,Rio de Janeiro
+00402552000398,Instituto de Engenharia Nuclear,IEN,RJ,Rio de Janeiro
+00402552000479,Instituto de Radioproteção e Dosimetria,IRD,RJ,Rio de Janeiro
+00402552000550,INSTITUTO DE PESQUISAS ENERGÉTICAS E NUCLEARES,IPEN-CNEN,SP,São Paulo
+00402552001289,CENTRO DE DESENVOLVIMENTO DA TECNOLOGIA NUCLEAR,CDTN,MG,Belo Horizonte
+00402552001440,Centro Regional de Ciências Nucleares do Nordeste,CRCN-NE,PE,Recife
+00575607000108,SUPERINTENDENCIA DE ESTUDOS ECONOMICOS E SOCIAIS DA BAHIA,SEI,BA,Salvador
+00636771000170,Fundação Unimed,FU,,
+00662270000168,"Instituto Nacional de Metrologia, Qualidade e Tecnologia",INMETRO,,
+00703367000171,Instituto Nacional de Educação para Defesa e Preservação do Meio Ambiente,INDEPPA,,
+00815175000157,ASSOCIAÇÃO DOS PRODUTORES DE SEMENTES DE MATO GROSSO,APROSMAT,MT,Rondonópolis
+01060102000165,ASSOCIAÇÃO EDUCATIVA EVANGÉLICA,AEE,GO,Anápolis
+01112580000171,Universidade Estadual de Goias,UEG,MS,Anápolis
+01203327000123,CESAR CENTRO DE ESTUDOS E SISTEMAS AVANÇADOS DO RECIFE,CESAR,PE,Recife
+01203327000638,CESAR CENTRO DE ESTUDOS E SISTEMAS AVANCADOS DO RECIFE,CESAR MANAUS,AM,Manaus
+01210830000106,FUNDAÇÃO UNIRG,UNIRG,TO,Gurupi
+01263896000407,Instituto Nacional de Tecnologia,INT,RJ,Rio de Janeiro
+01263896000598,Instituto Nacional de Pesquisas Espaciais,INPE,SP,São José dos Campos
+01263896001560,Instituto Nacional de Pesquisas da Amazônia,INPA,AM,Manaus
+01263896001993,Instituto Nacional do Semiárido,INSA,PB,Campina Grande
+01263896002108,Centro de Tecnologias Estratégicas do Nordeste,CETENE,PE,Recife
+01263896002612,Centro Nacional de Monitoramento e Alertas de Desastres Naturais,CEMADEN,SP,São José dos Campos
+01263896003422,INSTITUTO NACIONAL DA MATA ATLÂNTICA - Museu de Biologia Professor Mello Leitão,INMA,ES,Santa Teresa
+01263896003856,Instituto Nacional de Pesquisa do Pantanal,INPP,MT,Cuiabá
+01367770000130,FUNDACAO UNIVERSIDADE DO ESTADO DE MATO GROSSO,UNEMAT,MT,Cáceres
+01541283000141,Iquego - Indústria Química do Estado de Goiás,IQUEGO,GO,Goiânia
+01567601000143,Universidade Federal de Goiás,UFG,GO,Goiânia
+01576817000175,Centro Nacional de Pesquisa em Energia e Materiais,CNPEM,SP,Campinas
+01587609000171,Pontifícia Universidade Católica De Goiás,PUC Goiás,GO,Goiânia
+01637536000185,Universidade Estadual do Tocantins,UNITINS,TO,Palmas
+01703922000128,VERTEX Instituto de Tecnologia e Inovação,VERTEX,,
+01710917000142,Fundação Ezute,FE,SP,SÃO PAULO
+01715975000169,Instituto de Tecnologia para o Desenvolvimento,LACTEC,PR,Curitiba
+01815216000178,Universidade de Rio Verde,UniRV,GO,Rio Verde
+01955808000438,Fundação para Inovações Tecnológicas FITec,FITec,,
+02006782000100,"Fundação Hospitalar de Dermatologia Tropical e Venereologia ""Alfredo da Matta""",FUHAM,AM,Manaus
+02263082000192,FUNDAÇÃO EDUCERE DE CAMPO MOURÃO,EDUCERE,,
+02311889000153,FUNDACAO DE APOIO A PESQUISA AGROPECUARIA DE CHAPADAO,FUNDAÇÃO CHAPADAO,MS,Chapadão do Sul
+02437460000107,Instituto de Pesquisas Eldorado - Matriz,IPE-Matriz,DF,Brasília
+02437460000379,INSTITUTO DE PESQUISAS ELDORADO,IPE,,
+02437460000530,INSTITUTO DE PESQUISAS ELDORADO - MANAUS,IPE-MAN,AM,Manaus
+02641663000110,Fundação CPQD - Centro de Pesquisa e Desenvolvimento em Telecomunicações,CPQD,SP,Campinas
+02844344000102,FUNDAÇÃO AMAZÔNICA DE AMPARO À PESQUISA E DESENVOLVIMENTO TECNOLÓGICO DESEMBARGADOR PAULO DOS ANJOS FEITOZA,FPFTECH,AM,Manaus
+02886710000196,Instituto de Tecnologia e Pesquisa,ITP,SE,Aracaju
+02906177000187,Instituto de Desenvolvimento Ambiental e Social da Amazônia,IDASAM,AM,Manaus
+02921821000196,LABORATÓRIO INDUSTRIAL FARMACÊUTICO DO ESTADO DA PARAÍBA S/A,LIFESA,,
+03018444000142,Associação do Laboratório de Sistemas Integráveis Tecnológico - LSI-TEC,LSI-TEC,SP,São Paulo
+03053589000184,ASSOCIAÇÃO TÉCNICO CIENTÍFICA PAUL EHRLICH - APABCAM,APABCAM,RJ,Duque de Caxias
+03062936000135,Centro de Hidrografia da Marinha,CHM,RJ,Niteroi
+03119820000195,Instituto de Desenvolvimento Sustentável Mamirauá,IDSM,,
+03132745000100,"Ministério da Ciência, Tecnologia e Inovações - MCTI",MCTI,DF,Brasília
+03133607000138,FUNDAÇÃO DE APOIO AO DESENVOLVIMENTO TECNOLÓGICO DO HOSPITAL UNIVERSITÁRIO DA UNIVERSIDADE ESTADUAL DE LONDRINA,HUTec,,
+03226149001587,Universidade Católica Dom Bosco,UCDB,MS,Campo Grande
+03365403000122,Associação Igreja Adventista Missionária  UNINTA,AIAMIS UNINTA,CE,Sobral
+03438229000109,Fundação Euclides da Cunha de Apoio à Universidade Federal Fluminense,FEC,,
+03447568000143,Instituto Nacional de Matemática Pura e Aplicada,IMPA,RJ,Rio de Janeiro
+03485324002107,INSTITUTO DE CIENCIA E TECNOLOGIA - ICT SENAC/PE,ICT SENAC PE,,
+03508097000136,Rede Nacional de Ensino e Pesquisa,RNP,DF,Brasília
+03568867000136,HOSPITAL DAS FORÇAS ARMADAS,HFA,DF,Brasília
+03585986000105,Instituto de Biologia Molecular do Paraná,ibmp,PR,Curitiba
+03717043000180,Fundação Pró-Sementes de Apoio à Pesquisa,FPS,RS,Passo Fundo
+03768202000176,SENAI DEPARTAMENTO REGIONAL DO CEARA,SENAI Ceará,CE,Fortaleza
+03772576001641,Serviço Nacional de Aprendizagem Industrial - SENAI/MS,SENAI/MS,MS,Três Lagoas
+03773700008353,SERVICO NACIONAL DE APRENDIZAGEM INDUSTRIAL - DEPARTAMENTO REGIONAL DE MINAS GERAIS,CIT SENAI,MG,Belo Horizonte
+03774688000155,Serviço Nacional de Aprendizagem Industrial de Santa Catarina,SENAI SC,SC,Florianópolis
+03774688005548,Instituto SENAI de Inovação em Manufatura e Laser,ISI Joinville,SC,Joinville
+03774688008059,Instituto SENAI de Tecnologia em Mobilidade Elétrica e Energias Renováveis,LABMOB,SC,Jaraguá do Sul
+03774688008210,Faculdade de Tecnologia SENAI Joinville,UniSENAI Joinville,SC,Joinville
+03774819001508,ESCOLA SENAI SUÍÇO BRASILEIRA PAULO ERNESTO TOLLE,CFP 1.15,SP,São Paulo
+03774819002652,SERVICO NACIONAL DE APRENDIZAGEM INDUSTRIAL - ESCOLA SENAI ARMANDO DE ARRUDA PEREIRA,CFP 1.23,SP,São Caetano do Sul
+03774819006054,SENAI SP - Distrito tecnológico,DISTRITO TECNOLÓGICO,,
+03774819010329,Instituto SENAI de Inovação em Biotecnologia,ISI-SENAI-Biotec,,
+03775069000185,SERVICO NACIONAL DE APRENDIZAGEM INDUSTRIAL-SENAI,SENAI-RS,RS,Porto Alegre
+03775690000149,SERVIÇO NACIONAL DE APRENDIZAGEM INDUSTRIAL - SENAI AMAPÁ,SENAI AMAPÁ,AP,Macapá
+03776255000139,SERVIÇO NACIONAL DE APRENDIZAGEM INDUSTRIAL AMAZONAS,SENAI AM,AM,Manaus
+03776284000109,Serviço Nacional de Aprendizagem Industrial - PR,SENAI PR,PR,Curitiba
+03776284000281,SERVICO NACIONAL DE APRENDIZAGEM INDUSTRIAL - SENAI,SENAI PR CAMPUS,PR,Curitiba
+03776284000362,Serviço Nacional de Aprendizagem Industrial - Senai,Senai CIC,,
+03776284001091,INSTITUTO SENAI DE TECNOLOGIA EM CONSTRUÇÃO CIVIL,IST-CC,PR,Ponta Grossa
+03776284001172,SERVICO NACIONAL DE APRENDIZAGEM INDUSTRIAL - SENAI ARAPONGAS,SENAI ARAPONGAS,PR,Arapongas
+03776284001687,SERVICO NACIONAL DE APRENDIZAGEM INDUSTRIAL - SENAI Telêmaco Borba,SENAI Telêmaco Borba,PR,Telêmaco Borba
+03776284003035,SERVIÇO NACIONAL DE APRENDIZAGEM INDUSTRIAL - SENAI CTM,IST MM _ ISI EE,PR,Maringá
+03780605000130,SERVICO NACIONAL DE APRENDIZAGEM INDUSTRIAL - DEPARTAMENTO REGIONAL DE RONDONIA,SENAI,RO,Porto Velho
+03783850000100,SERVICO NACIONAL DE APRENDIZAGEM INDUSTRIAL SENAI GOIAS,SENAI GO,GO,Goiânia
+03784680001141,INSTITUTO SENAI DE INOVACAO EM ENERGIAS RENOVAVEIS,ISI-ER,RN,Natal
+03785762001615,Instituto SENAI de Inovação em Tecnologias Minerais,ISI-TM,PA,Belém
+03789272000100,Serviço Nacional de Aprendizagem Industrial,SENAI/PE,PE,Recife
+03795071000116,Serviço Nacional de Aprendizagem Industrial - Departamento Regional da Bahia - SENAI/DR/BA,SENAI CIMATEC,BA,Salvador
+03798361000113,SERVICO NACIONAL DE APRENDIZAGEM INDUSTRIAL,SENAI ALAGOAS,AL,Maceió
+03810810001688,Instituto Senai de Tecnologia em Eficiência Operacional,ISTEO,ES,Vitória
+03819150000110,Departamento Regional do SENAI MT,SENAI MT,MT,Cuiabá
+03819150001787,SENAI MT,UNISENAIMT,MT,Cuiabá
+03848688000152,SERVICO NACIONAL DE APRENDIZAGEM INDUSTRIAL SENAI,SENAI RJ,RJ,Rio de Janeiro
+03848688006517,Instituto SENAI de Inovação em Inspeção e Integridade,ISI II,RJ,Rio de Janeiro
+03848688006606,Instituto SENAI de Inovação em Sistemas Virtuais de Produção,ISI SVP,RJ,Rio de Janeiro
+03851105000142,Instituto SENAI de Inovação em Biossintéticos e Fibras,SENAI CETIQT,RJ,Rio de Janeiro
+03955027000126,"Instituto Cesumar de Ciência, Tecnologia e Inovação",ICETI,PR,Maringá
+04008342000109,Fundação Vale do Taquari de Educação e Desenvolvimento Social,Fuvates,RS,Lajeado
+04044443000135,Centro Brasileiro de Pesquisas Físicas,CBPF,RJ,Rio de Janeiro
+04052955000143,Laboratório Nacional de Astrofísica,LNA,MG,Itajubá
+04053755000105,Observatório Nacional,ON,RJ,Rio de Janeiro
+04071106000137,Universidade Federal do Acre,UFAC,AC,Rio Branco
+04071191000133,Museu de Astronomia e Ciências Afins,MAST,RJ,Rio de Janeiro
+04074457000100,Centro de Tecnologia Mineral,CETEM,RJ,Rio de Janeiro
+04079233000182,Laboratório Nacional de Computação Científica,LNCC,RJ,Petrópolis
+04082993000149,Instituto Brasileiro de Informação em Ciência e Tecnologia,IBICT,DF,Brasília
+04089290000142,PADETEC-PARQUE DE DESENVOLVIMENTO TECNOLOGICO S/C,PADETEC,CE,Fortaleza
+04108782000138,Museu Paraense Emílio Goeldi,MPEG,PA,Belém
+04214217000155,Prefeitura Municipal de Jundiá RN,PMJ,RN,Jundiá
+04238696000140,Centro de Referência em Informação Ambiental,CRIA,SP,Campinas
+04280196000176,Universidade do Estado do Amazonas,UEA,AM,Manaus
+04287092000193,Fundação de Ensino e Pesquisa em Ciências da Saúde,FEPECS,,
+04378626000197,Universidade Federal do Amazonas,UFAM,AM,Manaus
+04418943000190,Fundação Universidade Federal de Rondônia,UNIR,RO,Porto Velho
+04451806000157,INSTITUTO DE INOVAÇÃO E DESENVOLVIMENTO SUSTENTÁVEL,IDS,AM,Manaus
+04453993000108,Centro Avançado de Ortodontia Paulo Picanço,FACPP,,
+04534053000143,FUNDACAO DE MEDICINA TROPICAL DOUTOR HEITOR VIEIRA DOURADO,FMT-HVD,AM,Manaus
+04614281000123,Insituto Atlântico,ATLANTICO,,
+04732975000165,Universidade Estadual do Rio Grande do Sul,UERGS,RS,Porto Alegre
+04755519000130,Fundação Instituto Polo Avançado da Saúde de Ribeirão Preto,FIPASE,SP,Ribeirão Preto
+04802134000268,Instituto de Desenvolvimento Tecnológico,INDT,AM,Manaus
+04809688000106,Universidade Estadual do Norte Fluminense Darcy Ribeiro,UENF,RJ,Campos dos Goytacazes
+04822500000160,Centro de Tecnologia da Informação Renato Archer,CTI,SP,Campinas
+04899809000158,INSTITUTO GESTAO E DESENVOLVIMENTO SUSTENTAVEL IGEDS - ARANDU,IGEDS ARANDU,ES,Vitória
+04921881000134,"Secretaria de Estado de Ciência, Tecnologia e Inovação",SECITECI,MT,Cuiabá
+04936616000120,Instituto de Pesquisas Jardim Botânico do Rio de Janeiro,JBRJ,RJ,Rio de Janeiro
+04991083000189,NÚCLEO DE ESTUDOS E PESQUISAS DO NORTE E NORDESTE,NEPEN,CE,Fortaleza
+05012896000142,UNIVERSIDADE ESTADUAL DO PARANÁ,UNESPAR,PR,Paranavaí
+05055128000176,Universidade Federal de Campina Grande,UFCG,PB,Campina Grande
+05055795000159,INSTITUTO CULTURAL AMILCAR MARTINS,ICAM,MG,Belo Horizonte
+05094563000100,Centro de Ciências Sociais e Educação,CCSE,,
+05123972000278,INSTITUTO CENTRO DE PESQUISA E DESENVOLVIMENTO EM TECNOLOGIA DE SOFTWARE,ICTS AM,,
+05149726000104,Universidade Federal do Tocantins,UFT,TO,Palmas
+05200001000101,Universidade Federal Rural da Amazônia,UFRA,PA,Belém
+05440725000114,Universidade Federal do Vale do São Francisco,UNIVASF,PE,Petrolina
+05508362000101,Centro de Pesquisa de Historia Natural e Arqueologia - Cultura,CPHNAMA,,
+05643772000165,Instituto Certi Amazônia,ICA,AM,Manaus
+05684573000103,Flextronics Instituto de Tecnologia,FIT,SP,Sorocaba
+05684573000286,Flextronics Instituto de Tecnologia.,FIT JAG,SP,Jaguariúna
+05774391000115,ASSOCIAÇÃO INSTITUTO DE TECNOLOGIA DE PERNAMBUCO,ITEP/OS,,
+05994459000171,SIDIA INSTITUTO DE CIENCIA E TECNOLOGIA,SIDIA,AM,Manaus
+06056498000190,ORGANIZACAO DE DESENVOLVIMENTO CULTURAL E PRESERVACAO AMBIENTAL AMA-BRASIL,AMA,SP,São Paulo
+06070152000147,Insper Instituto de Ensino e Pesquisa,INSPER,SP,São Paulo
+06145017000113,"FUNDAÇÃO DE APOIO AO ENSINO, PESQUISA E EXTENSÃO",FAPEAD,,
+06168092000108,Fundação Hospital Adriano Jorge,FHAJ,AM,Manaus
+06176586000126,SiDi,SiDi Matriz,PE,Recife
+06220430000103,Fundação de Apoio ao Desenvolvimento da Computação Científica,FACC,RJ,Petrópolis
+06279103000119,Universidade Federal do Maranhão,UFMA,MA,São Luís
+06352421000168,Universidade Estadual do Maranhão,UEMA,MA,São Luís
+06517387000134,Universidade Federal do Piauí,UFPI,PI,Teresina
+06656711000103,"Secretaria de Estado da Ciência, Tecnologia, Inovação e Educação Profissional",SECTI,ES,Vitória
+06740864000126,UNIVERSIDADE REGIONAL DO CARIRI,URCA,CE,Crato
+06938508000111,Sergipe Parque Tecnológico,SergipeTec,SE,São Cristóvão
+07084577000178,Instituto Euvaldo Lodi - IEL Ceará,IEL Ceará,CE,Fortaleza
+07129796000126,Centro Gestor e Operacional do Sistema de Proteção da Amazônia,CENSIPAM,DF,Brasília
+07191406000148,Fundação Cearense de Meteorologia e Recursos Hídricos,FUNCEME,CE,Fortaleza
+07272636000131,Universidade Federal do Ceará,UFC,CE,Fortaleza
+07309657000184,Centro de Tecnologias em Dutos,CTDUT,RJ,Duque de Caxias
+07373434000186,FUNDAÇÃO EDSON QUEIROZ – UNIVERSIDADE DE FORTALEZA,UNIFOR,CE,Fortaleza
+07471758000157,FUNDAÇÃO UNIVERSIDADE ESTADUAL DO PIAUÍ,FUESPI,PI,Teresina
+07520940000150,Fundação Municipal de Ciência & Tecnologia Egberto Tavares Costa,FUNTITEC,,
+07624772000143,Parque Tecnológico de Belo Horizonte,BH-TEC,MG,Belo Horizonte
+07722779000106,Universidade Federal do ABC,UFABC,SP,Santo André
+07769688000118,Fundação Parque Tecnológico Itaipu,PTI,,
+07775847000197,Universidade Federal da Grande Dourados,UFGD,MS,Dourados
+07777800000162,Universidade Federal do Recôncavo da Bahia,UFRB,BA,Cruz das Almas
+07821622000120,UNIVERSIDADE ESTADUAL VALE DO ACARAÚ - UVA,UVA,CE,Sobral
+07885809000197,FUNDACAO UNIVERSIDADE ESTADUAL DO CEARA,FUNECE,CE,Fortaleza
+08027218000141,Fundação IMED,ATITUS,RS,Passo Fundo
+08065528000150,INSTITUTO DE INOVACOES FOTONICAS - PHOTONICS INNOVATION INSTITUTE,iTech,SP,Campinas
+08186277000162,UNIVERSIDADE DO ESTADO DO AMAPÁ,UEAP,AP,Macapá
+08234148000100,Prefeitura Municipal de Macaíba/RN,PMM,,
+08240695000190,Universidade Estadual de Roraima,UERR,RR,Boa Vista
+08258295000102,Universidade do Estado do Rio Grande do Norte,UERN,RN,Mossoró
+08407930000176,FACULDADE DE TEOLOGIA E CIÊNCIAS,FATEC,SP,Álvares Florence
+08635952000193,Centro Tecnológico do Exército,CTEX,RJ,Rio de Janeiro
+08706600000181,Instituto Mato-Grossense do Algodão,IMAmt,MT,Cuiabá
+08711015000170,Instituto Militar de Engenharia,IME,RJ,Rio de Janeiro
+08777009000115,LATIN AMERICAN COOPERATIVE ONCOLOGY GROUP,LACOG,RS,Porto Alegre
+08829974004181,Instituto Chico Mendes de Conservação da Biodiversidade / Centro Nacional de Pesquisa e Conservação da Biodiversidade Aquática Continental,ICMBio/CEPTA,,
+08855874000213,SECRETARIA DE PORTOS DA PRESIDENCIA DA REPUBLICA,INPH,RJ,Rio de Janeiro
+08885100000154,Universidade Estadual do Norte do Paraná,UENP,PR,Jacarezinho
+08900206000180,Transfer-Tech - Gestão de Inovações LTDA,TT,RS,Erechim
+09072185000114,Archo Medical,Archo,,
+09105890000170,Associação Parque Tecnológico de São José dos Campos,APTSJC,SP,São José dos Campos
+09261843000116,Fundação Parque Tecnológico da Paraíba,PaqTcPB,,
+09341233000122,Universidade Federal do Pampa,UNIPAMPA,RS,Bagé
+09419789000194,Núcleo de Tecnologia e Qualidade Industrial do Ceará,NUTEC,CE,Fortaleza
+09462873000190,CENTRO TECNOLÓGICO DA MARINHA EM SÃO PAULO,CTMSP,SP,São Paulo
+09528436000122,Associação Beneficente Hospital Universitário,ABHU,SP,Marília
+09529939000112,ASSOCIACAO DE ASSISTENCIA A CULTURA NA AMAZONIA MOACYR GRECHI,AASCAM,RO,Porto Velho
+09563085000190,1o Centro de Geoinformação,1o CGEO,RS,Porto Alegre
+09666365000124,Herbário do Jardim Botânico Plantarum,HPL,SP,Nova Odessa
+09686560000116,Instituto de Tecnologia e Educação Galileo da Amazônia,ITEGAM,AM,Manaus
+09688074000137,ESCOLA DE COMANDO E ESTADO MAIOR DO EXERCITO,ECEME,RJ,Rio de Janeiro
+09773169000159,Fundação Joaquim Nabuco,FUNDAJ,PE,Recife
+10465006000198,Instituto de Pesquisas da Marinha,IPQM,RJ,Rio de Janeiro
+10557636000192,Intellectos Centro de Pesquisa e Desenvolvimento Educacional,INTELLECTOS,,
+10573118000162,INSTITUTO DE ESTUDOS DO MAR ALMIRANTE PAULO MOREIRA,IEAPM,RJ,Arraial do Cabo
+10626896000172,"Instituto Federal de Educação, Ciência e Tecnologia de Minas Gerais",IFMG,,
+10626896000253,Instituto Federal de Educação Ciência e Tecnologia de Minas Gerais - Campus Ouro Preto,IFMG OP,MG,Ouro Preto
+10635424000186,Instituto Federal Catarinense,IF-CATARINENSE,SC,Blumenau
+10637926000146,"Instituto Federal de Educação, Ciência e Tecnologia do Rio Grande do Sul",IFRS,RS,Bento Gonçalves
+10638878000100,CONSORCIO INTERMUNICIPAL DE GESTÃO PÚBLICA DO VALE DO ITAPOCU,CIGAMVALI,SC,Jaraguá do Sul
+10648539000105,"Instituto Federal de Educação, Ciência e Tecnologia do Sul de Minas Gerais",IFSULDEMINAS,MG,Pouso Alegre
+10651417000178,Instituto Federal Goiano,IF GOIANO,GO,Goiânia
+10651417000682,"Instituto Federal de Educação, Ciência e Tecnologia Goiano - Campus Iporá",IFGOIPR,,
+10651417001140,"INSTITUTO FEDERAL DE EDUCAÇÃO, CIÊNCIA E TECNOLOGIA GOIANO - CAMPUS POSSE",IFGoiano Campus Posse,GO,Posse
+10652179000115,Instituto Federal do Paraná,IFPR,PR,Curitiba
+10662072000409,"INSTITUTO FEDERAL DE EDUCACAO, CIENCIA E TECNOLOGIA FARROUPILHA",IFFAR CAMPUS ALEGRETE,RS,Alegrete
+10673078000120,"Instituto Federal de Educação, Ciência e Tecnologia de Mato Grosso do Sul",IFMS,MS,Campo Grande
+10673078000392,Instituto Federal de Mato Grosso do Sul - Campus Campo Grande,IFMS CG,,
+10673078000635,"Instituto Federal de Educação, Ciência e Tecnologia de Mato Grosso do Sul - Campus Coxim",IFMS CX,,
+10695891000100,Instituto Federal do Triângulo Mineiro,IFTM,MG,Uberaba
+10723648000140,"Instituto Federal de Educação, Ciência e Tecnologia do Sudeste de Minas Gerais",IF Sudeste MG,MG,Juiz de Fora
+10724903000179,Instituto Federal Baiano,IF BAIANO,BA,Salvador
+10724903000411,Instituto Federal de Ciência e Tecnologia Baiano,IFBaiano,,
+10724903000500,"Instituto Federal de Educação, Ciência e Tecnologia Baiano - Campus Catu",IFBAIANO CAMPUS CATU,BA,Catu
+10727655000110,"Instituto Federal de Educação, Ciência e Tecnologia do Norte de Minas Gerais",IFNMG,MG,Montes Claros
+10728444000100,Instituto Federal de Sergipe,IFS,SE,Aracaju
+10729992000146,Instituto Federal Sul-Rio-Grandense,IFSUL,RS,Pelotas
+10735145000194,Instituto Federal de Educação Ciência e Tecnologia do Maranhão,IFMA,MA,São Luís
+10735145000607,Instituto Federal do Maranhão Campus Açailândia,IFMA-Açailândia,MA,Açailândia
+10735145001085,"Instituto Federal de Educação, Ciência e Tecnologia do Maranhão - campus Codó",IFMA - Codó,MA,Codó
+10742006000198,"Instituto Federal de Educação, Ciência e Tecnologia do Tocantins",IFTO,TO,Palmas
+10744098000145,Instituto Federal do Ceará,IFCE,CE,Fortaleza
+10744098001389,"INSTITUTO FEDERAL DE EDUCAÇÃO, CIÊNCIA E TECNOLOGIA DO CEARÁ - CAMPUS CRATEÚS",IFCE-CRATEÚS,CE,Crateús
+10744098002270,"Instituto Federal de Educação, Ciência e Tecnologia do Ceará, campus de ubajara",IFCE-UBAJARA,CE,Ubajara
+10744098002865,"INSTITUTO FEDERAL DE EDUCACAO, CIENCIA E TECNOLOGIA DO CEARA",IFCE Campus Itapipoca,,
+10744098003160,"INSTITUTO FEDERAL DE EDUCAÇÃO, CIÊNCIA E TECNOLOGIA DO CEARÁ CAMPUS BOA VIAGEM",IFCE BOA VIAGEM,CE,Boa Viagem
+10763998000130,"Instituto Federal de Educação, Ciência e Tecnologia do Pará",IFPA,PA,Belém
+10764307000112,Instituto Federal da Bahia,IFBA,BA,Salvador
+10764307000201,"INSTITUTO FEDERAL DE EDUCAÇÃO, CIÊNCIA E TECNOLOGIA DA BAHIA - Campus Salvador",IFBA SSA,BA,Salvador
+10764307000708,"Instituto Federal de Educação, Ciência e Tecnologia da Bahia - Campus Santo Amaro",IFBA Santo Amato,BA,Santo Amaro
+10764307001275,"INSTITUTO FEDERAL DE EDUCAÇÃO, CIÊNCIA E TECNOLOGIA DA BAHIA - IFBA CAMPUS DE JEQUIÉ",IFBA Jequié,BA,Jequié
+10767239000145,"Instituto Federal de Educação, Ciência e Tecnologia de Pernambuco",IFPE,PE,Recife
+10779511000107,Instituto Federal Fluminense,IFF,RJ,Campos dos Goytacazes
+10783898000175,"Instituto Federal de Educação, Ciência e Tecnologia da Paraíba",IFPB,PB,João Pessoa
+10784782000150,Instituto Federal de Mato Grosso,IFMT,MT,Cuiabá
+10791831000182,Instituto Federal de Brasília,IFB,DF,BRASÍLIA
+10791831000425,"INSTITUTO FEDERAL DE EDUCACAO, CIENCIA E TECNOLOGIA DE BRASILIA",IFB-Taguatinga,,
+10792928000100,"Instituto Federal de Educação, Ciência e Tecnologia do Amazonas",IFAM,AM,Manaus
+10792928000703,INSTITUTO FEDERAL DO AMAZONAS - CAMPUS PRESIDENTE FIGUEIREDO,IFAM CPRF,,
+10806496000149,Instituto Federal do Piauí,IFPI,PI,Teresina
+10806496001200,INSTITUTO FEDERAL DE EDUCAÇÃO DO PIAUÍ - CAMPUS SÃO RAIMUNDO NONATO,IFPI-CASRN,PI,São Raimundo Nonato
+10817343000105,"Instituto Federal de Educacao,Ciencia e Tecnologia de Rondonia",IFRO,RO,Porto Velho
+10820882000195,Instituto Federal do Amapá,IFAP,,
+10825373000155,Instituto Federal de Alagoas,IFAL,AL,Maceió
+10825373000660,Instituto Federal de Alagoas - Campus Penedo,IFAL-Campus Penedo,AL,Penedo
+10830301000104,"INSTITUTO FEDERAL DE EDUCACAO, CIENCIA E TECNOLOGIA DO SERTAO PERNAMBUCANO",IFSertãoPE,,
+10838653000106,"Instituto Federal de Educação, Ciência e Tecnologia do Espírito Santo",IFES,ES,Vitória
+10839508000131,Instituto Federal de Roraima,IFRR,RR,Boa Vista
+10847721000195,UNIVERSIDADE CATÓLICA DE PERNAMBUCO,UNICAP,PE,Recife
+10870883000144,"Instituto Federal de Educação, Ciência e Tecnologia de Goiás",IFG,GO,Goiânia
+10870883000659,"Instituto Federal de Educação, Ciência e Tecnologia de Goiás - Campus Uruaçu",IFG - Uruaçu,,
+10870883001116,Instituto Federal de Goiás - Campus Cidade de Goiás,IFG Cidade de Goiás,,
+10877412000168,"INSTITUTO FEDERAL DE EDUCACAO, CIENCIA E TECNOLOGIA DO RIO GRANDE DO NORTE",IFRN,RN,Natal
+10877412000400,Instituto Federal de Educação Ciêncai e Tecnologia do Rio Grande do Norte - Campus Ceará-Mirim,IFRN/CM,,
+10877412000591,"INSTITUTO FEDERAL DE EDUCAÇÃO, CIÊNCIA E TECNOLOGIA DO RIO GRANDE DO NORTE - CAMPUS APODI",IFRN/APODI,RN,Apodi
+10877412000672,"Instituto Federal de Educação, Ciência e Tecnologia do Rio Grande do Norte (IFRN) - Campus Pau dos Ferros",IFRN-PF,RN,Pau dos Ferros
+10877412001059,INSTITUTO FEDERAL DO RIO GRANDE DO NORTE - CAMPUS NATAL-CENTRAL,IFRN/CNAT,RN,Natal
+10877412001130,"Instituto Federal de Educação, Ciência e Tecnologia do Rio Grande do Norte, Campus Currais Novos",Currais Novos,RN,Currais Novos
+10877412001210,IFRN Campus Caicó,IFRN Caicó,RN,Caicó
+10877412001725,"Instituto Federal de Educação, Ciência e Tecnologia do Rio Grande do Norte Campus São Paulo do Potengi",IFRN/SPP,RN,São Paulo do Potengi
+10882594000165,Instituto Federal de São Paulo,IFSP,SP,São Paulo
+10882594002028,Instituto Federal de São Paulo - Campus Araraquara,IFSP ARQ,SP,Araraquara
+10894988000133,Sociedade Pernambucana de Combate ao Câncer - Hospital de Câncer de Pernambuco,HCP,PE,Recife
+10912293000137,INTITUTO AGRONÔMICO DE PERBAMBUCO,IPA,PE,Recife
+10918674000123,Instituto Federal do Acre,IFAC,AC,Rio Branco
+10942995000163,Instituto do Câncer Infantil e Pediatria Especializada,ICIPE,DF,Brasília
+10952708000104,Instituto Federal de Educação Ciência e Tecnologia do Rio de Janeiro,IFRJ,RJ,Rio de Janeiro
+10988301000129,INSTITUTO DE MEDICINA INTEGRAL PROFESSOR FERNANDO FIGUEIRA,IMIP,,
+11022597000191,Fundação Universidade de Pernambuco - UPE,UPE,PE,Recife
+11024200000109,"FUNDAÇÃO DE CIÊNCIA, TECNOLOGIA, INOVAÇÃO E DESENVOLVIMENTO SUSTENTÁVEL GUAMÁ",FCTG,PA,Belém
+11024672000153,Instituto Musica Brasilis,IMB,RJ,Rio de Janeiro
+11118393000159,Universidade Federal do Oeste do Pará,UFOPA,PA,Santarém
+11189429000195,Centro Internacional de Tecnologia de Software do Amazonas - Cits.amazonas,CITS.AM,AM,Manaus
+11234780000150,Universidade Federal da Fronteira Sul,UFFS,SC,Chapecó
+11376952000120,Laboratório Farmacêutico da Marinha,LFM,,
+11402887000160,Instituto Federal de Santa Catarina,IFSC,SC,Florianópolis
+11806275000133,Universidade Federal da Integração Latino-Americana,UNILA,PR,Foz do Iguaçu
+12397930000100,Universidade da Integração Internacional da Lusofonia Afro-Brasileira,UNILAB,CE,Redenção
+12433137000119,INSTITUTO D'OR DE PESQUISA E ENSINO,IDOR,RJ,Rio de Janeiro
+12517793000108,Universidade Estadual de Ciências da Saúde de Alagoas,UNCISAL,AL,Maceió
+12535244000158,"INSTITUTO DE APOIO A INOVACAO, INCUBACAO E TECNOLOGIA DE PALHOCA",INAITEC,,
+12671814000137,Universidade Estadual da Paraíba,UEPB,PB,Campina Grande
+13031547000104,Universidade Federal de Sergipe,UFS,SE,São Cristóvão
+13069489000108,Universidade Estadual do Sudoeste da Bahia,UESB,BA,vitória da conquista
+13078518000190,"Fundação Baiana de Pesquisa Científica e Desenvolvimento Tecnológico, Fornecimento e Distribuição de Medicamentos",Bahiafarma,BA,Simões Filho
+13108295000166,Empresa de Desenvolvimento Agropecuário de Sergipe,Emdagro,SE,Aracaju
+13883037000157,VENTURUS CENTRO DE INOVAÇÃO TECNOLÓGICA-A,VNT-AM,AM,Manaus
+14045546000173,Universidade Estadual de Feira de Santana,UEFS,BA,Feira de santana
+14485841000140,Universidade do Estado da Bahia,UNEB,BA,Salvador
+14814139000183,Fundação Estatal de Atenção à Saúde de Curitiba,Feas,,
+15126437000305,HOSPITAL UNIVERSITÁRIO DE BRASÍLIA,HUB-UnB/Ebserh,DF,Brasília
+15126437000496,Hospital Universitário da Universidade Federal do Maranhão,HU-UFMA,MA,São Luís
+15126437001115,Hospital Universitário Getúlio Vargas,HUGV/UFAM,AM,Manaus
+15126437001468,EMPRESA BRASILEIRA DE SERVICOS HOSPITALARES - FILIAL COMPLEXO HOSPITALAR DA UFC (HUWC E MEAC),CH-UFC/EBSERH,,
+15126437001549,HOSPITAL DAS CLINICAS DA UFMG - EMPRESA BRASILEIRA DE SERVICOS HOSPITALARES - EBSERH,HC-UFMG/EBSERH,,
+15126437001700,Hospital Universitário Lauro Wanderley,HULW,PB,João Pessoa
+15126437002197,Hospital Universitário Dr. Washington Antonio de Barros,HU Univasf - Ebserh,,
+15126437002359,Hospital Escola da UFPEL,HE-UFPEL,RS,Pelotas
+15126437002430,"Complexo do Hospital de Clínicas da UFPR, Filial EBSERH",CHC-UFPR/EBSERH,PR,Curitiba
+15126437004300,Centro de Pesquisa Clinica do Hospital Universitário da Universidade Federal do Amapá,CPC-HU-UNIFAP,AP,Macapá
+15151763000100,Instituto Para a Valorizacao da Educacao e da Pesquisa No Estado de Sao Paulo,IVEPESP,SP,Santo André
+15180714000104,Universidade Federal da Bahia,UFBA,BA,Salvador
+15180714000287,EMPRESA BRASIEIRA DE SERVIÇOS HOSITALARES,EBSERH,BA,Salvador
+15254949000195,CENTRO UNIVERSITÁRIO DO ESTADO DO PARÁ,CESUPA,PA,Belém
+15461510000133,Universidade Federal de Mato Grosso do Sul,UFMS,MS,Campo Grande
+15691624000170,EAMAZÔNIA - ENERGIA SUSTENTÁVEL E INOVAÇÃO,EAMAZÔNIA,AC,Rio Branco
+16888315000157,Universidade Federal dos Vales do Jequitinhonha e Mucuri,UFVJM,MG,Diamantina
+17138140000123,Empresa de Pesquisa Agropecuária de Minas Gerais,EPAMIG,MG,Belo Horizonte
+17178195001481,Pontifícia Universidade Católica de Minas Gerais,PUC Minas,MG,Belo Horizonte
+17178203000175,FUNDAÇÃO EDUCACIONAL LUCAS MACHADO,FELUMA,,
+17217985000104,Universidade Federal de Minas Gerais,UFMG,MG,Belo Horizonte
+17217985006579,Espaço do Conhecimento UFMG,ECUFMG,,
+17220203000196,Centro Federal de Educação Tecnológica de Minas Gerais,CEFET-MG,MG,Belo Horizonte
+17222768000102,Instituto de Tecnologia Edson Mororó Moura,ITEMM,PE,Belo Jardim
+17503475000101,Fundação Ezequiel Dias,FUNED,MG,Belo Horizonte
+17513235000180,ASSOCIACAO MARIO PENNA,AMP,,
+17879859000115,Universidade Federal de Alfenas,UNIFAL-MG,MG,Alfenas
+18104880000101,Comando da Marinha - Instituto de Pesquisas Biomédicas do Hospital Naval Marcílio Dias,IPB/HNMD,RJ,Rio de Janeiro
+18118151000104,Centro de Inovação e Ensaios Pré-Clínicos,CIEnP,SC,Florianópolis
+18366966000102,Centro Internacional de Energias Renováveis - Biogás,CIBIOGAS-ER,PR,Foz do Iguaçu
+18560547000107,Universidade Federal do Sul da Bahia,UFSB,BA,Itabuna
+18621825000199,Universidade Federal do Cariri,UFCA,CE,Juazeiro do Norte
+18641263000145,Universidade Federal do Oeste da Bahia,UFOB,BA,Barreiras
+18657063000180,Universidade Federal do Sul e Sudeste do Pará,UNIFESSPA,PA,Marabá
+19176461000148,Instituto Santos Dumont,ISD,RN,Macaíba
+20353193000171,"Instituto de Inovação, Pesquisa, Desenvolvimento Científico e Tecnológico do Amazonas",IPDEC,AM,Manaus
+20611810000191,Fundação Percival Farquar,FPF,MG,Governador Valadares
+21040001000130,Universidade Federal de Itajubá,UNIFEI,MG,Itajubá
+21186804000105,Universidade Federal de São João del-Rei,UFSJ,MG,São João Del Rei
+21195755000169,Universidade Federal de Juiz de Fora,UFJF,MG,Juiz de Fora
+21595750000123,Instituto Matogrossense do Agronegócio,IAGRO,MT,Cuiabá
+21772639000165,INSTITUTO AURUS,ICT AURUS,PE,Recife
+22078679000174,Universidade Federal de Lavras,UFLA,MG,Lavras
+22225247000149,FUNDACAO RADIO E TELEVISAO EDUCATIVA DE UBERLANDIA,RTU,MG,Uberlândia
+22579428000173,Instituto Hercílio Randon,IHR,RS,Farroupilha
+22675359000100,Universidade Estadual de Montes Claros,UNIMONTES,MG,Montes Claros
+23070659000110,Universidade Federal de Ouro Preto,UFOP,MG,Ouro Preto
+23456506000105,Marie Curie Júnior,MCJr,,
+23689763000359,Universidade CEUMA - Associação de Ensino Superior,CEUMA,MA,São Luís
+23696238000107,INSTITUTO AVANCADO DE TECNOLOGIA E INOVACAO IATI,IATI,PE,Recife
+23703246000125,Centro de Inovacao no Agronegocio,CIAg,,
+24042289000250,Associação Parque Científico e Tecnológico do Sul da Bahia,CIC,BA,Ilhéus
+24098477000110,Universidade Federal da Paraíba,UFPB,PB,João Pessoa
+24098477000977,Centro de Ciências Agrárias da UFPB,CCA,PB,Areia
+24134488000108,Universidade Federal de Pernambuco,UFPE,PE,Recife
+24134488002151,DIRETORIA DO CENTRO DE CIÊNCIAS EXATAS E DA NATUREZA,CCEN,PE,Recife
+24134488002666,Diretoria do Centro de Ciências da Saúde,CCS,PE,Recife
+24134488002747,CENTRO DE TECNOLOGIA E GEOCIÊNCIAS DA UFPE,CTG/UFPE,PE,Recife
+24365710000183,Universidade Federal do Rio Grande do Norte,UFRN,RN,Natal
+24416174000106,Universidade Federal Rural de Pernambuco,UFRPE,PE,Recife
+24464109000148,Universidade Federal de Alagoas,UFAL,AL,Maceió
+24492886000104,Fundação Instituto Nacional de Telecomunicações,Finatel,MG,Santa Rita do Sapucaí
+24529265000140,UNIVERSIDADE FEDERAL RURAL DO SEMI-ÁRIDO,UFERSA,RN,Mossoró
+24978041000115,Fundação de Pesquisa e Desenvolvimento Tecnológico Rio Verde,FRV,MT,Lucas do Rio Verde
+25161678000187,Pix Force Tecnologia Ltda,Pix Force,RS,Porto Alegre
+25437484000161,Universidade Federal do Triângulo Mineiro,UFTM,MG,Uberaba
+25648387000118,Universidade Federal de Uberlândia,UFU,MG,Uberlândia
+25682795000196,Instituto Tecnológico das cadeias Biossustentáveis,ITCBio,PE,Recife
+25944455000196,Universidade Federal de Viçosa,UFV,MG,Viçosa
+26261262000101,Museu Nacional de Imigração e Colonização,MNIC,SC,Joinville
+26677304000181,Universidade Estadual da Região Tocantina do Maranhão,UEMASUL,MA,Imperatriz
+26782757000178,FUNDACAO UNIVERSISTAS DE ESTUDOS AMAZONICOS,FUEA,AM,Manaus
+27214907000100,Instituto de Arqueologia Brasileira,IAB,RJ,Belford Roxo
+27273416000130,"Instituto Capixaba de Pesquisa, Assistência Técnica e Extensão Rural",INCAPER,ES,Vitória
+27531475000160,Centro Tecnológico da Marinha no Rio de Janeiro,CTMRJ,RJ,Rio de Janeiro
+27698796000154,Instituto Via Green,Via Green,SP,Santos
+28494214000180,FIT INSTITUTO DE TECNOLOGIA DA AMAZÔNIA,FIT MAO,,
+28523215000106,Universidade Federal Fluminense,UFF,RJ,Niterói
+28616272000130,Centro de Atenção Integral e Treinamento em Doenças Raras - Casa dos Raros,CDR,RS,Porto Alegre
+28733124000103,"ASSOCIACAO BRASILEIRA DE PESQUISA, DESENVOLVIMENTO E INOVACAO DO HIDROGENIO",ABH2,,
+28830986000146,Instituto Educacional do Sertão,IES,PE,Afogados da Ingazeira
+28831817000120,"INSTITUTO DE PESQUISA, ENSINO, CIENCIA E TECNOLOGIA APLICADA - INSTITUTO GALZU",IGZ,RJ,Campos dos Goytacazes
+29093966000100,CONECTHUS INSTITUTO DE TECNOLOGIA E BIOTECNOLOGIA DO AMAZONAS,CONECTHUS,AM,Manaus
+29225713000135,INSTITUTO TECNOLOGICO EDUCACIONAL DA AMAZONIA TÍTULO DO,ITEAM,AM,Manaus
+29427465000105,Universidade Federal Rural do Rio de Janeiro,UFRRJ,RJ,Seropédica
+30694272000108,"Associação de Ensino, Pesquisa e Extensão Biopark",Biopark Educação,,
+31902896000128,ASSOCIAÇÃO DOS PESQUISADORES DA REGIÃO NORTE DO BRASIL,APRENO,RO,Porto Velho
+32325367000171,Associação Brasileira de Direito Aeronáútico e Espacial,SBDA,RJ,Rio de Janeiro
+32479123000143,Universidade Federal do Espírito Santo,UFES,ES,VITÓRIA
+32917672000152,"INSTITUTO MATO-GROSSENSE DO FEIJAO, PULSES, COLHEITAS ESPECIÂIS E IRRIGACAO",IMAFIR-MT,MT,Cuiabá
+33004540000100,Universidade Federal de Mato Grosso,UFMT,MT,Cuiabá
+33113601000160,Instituto Ágora de Inovação e Empreendedorismo,ÁGORA,SC,Joinville
+33495870000138,Casa de Nossa Senhora da Paz - ASF,USF,SP,Bragança Paulista
+33519114000100,Universidade Federal do Delta do Parnaíba,UFDPar,PI,Parnaíba
+33540014000157,Universidade do Estado do Rio de Janeiro,UERJ,RJ,Rio de Janeiro
+33555921000170,Pontifícia Universidade Católica do Rio de Janeiro,PUC-RIO,RJ,Rio de Janeiro
+33641663000144,Escola de Matemática Aplicada da Fundação Getulio Vargas,FGV EMAp,RJ,Rio de Janeiro
+33663683000116,Universidade Federal do Rio de Janeiro,UFRJ,RJ,Rio de Janeiro
+33663683000973,Faculdade de Arquitetura e Urbanismo da Universidade Federal do Rio de Janeiro,FAUUFRJ,RJ,RIO DE JANEIRO
+33663683001783,Instituto de Biofísica Carlos Chagas Filho,IBCCF,RJ,Rio de Janeiro
+33663683002160,Instituto de Microbiologia Paulo de Góes,IMPG,RJ,Rio de Janeiro
+33663683003131,Instituto de Matemática - UFRJ,IM-UFRJ,RJ,Rio de Janeiro
+33663683003301,Instituto de Bioquímica Médica Leopoldo de Meis,IBqM-UFRJ,,
+33663683005002,Universidade Federal do Rio de Janeiro - Decanato do Centro de Ciências da Saúde,UFRJ-CCS,RJ,Rio de Janeiro
+33663683005509,Instituto Alberto Luiz Coimbtra de Pós Graduação,COPPE,RJ,Rio de Janeiro
+33663683005690,Instituto de Macromoléculas,IMA,RJ,Rio de Janeiro
+33663683006076,Instituto de Ciências Biomédicas,ICB,RJ,Rio de Janeiro
+33663683007048,Centro Multidisciplinar UFRJ Macaé,CM UFRJ Macaé,RJ,Macaé
+33775164000140,FUNDAÇÃO TÉCNICO-EDUCACIONAL SOUZA MARQUES,FTESM,,
+33781055000135,Fundação Oswaldo Cruz,FIOCRUZ,RJ,Rio de Janeiro
+33781055000801,Instituto René Rachou,IRR,MG,Belo Horizonte
+33781055001530,Instituto de Tecnologia em Imunobiológicos,Bio-Manguinhos,RJ,Rio de Janeiro
+33781055002189,Instituto Leônidas e Maria Deane,ILMD,AM,Manaus
+33781055006680,Fundacao Oswaldo Cruz Noroeste,FIOCRUZ-RO,RO,Porto Velho
+33781055006761,Fundação Oswaldo Cruz,Fiocruz CE,CE,Eusébio
+33781055006842,Fiocruz Mato Grosso do Sul / Fiocruz Pantanal,FiocruzMS,MS,Campo Grande
+33781055007300,INSTITUTO DE CIENCIA E TECNOLOGIA EM BIOMODELOS,ICTB,RJ,Rio de Janeiro
+34008227000103,Sociedade Unificada de Ensino Augusto Motta,UNISUAM,RJ,Rio de Janeiro
+34023077000107,Universidade Federal do Estado do Rio de Janeiro,UNIRIO,RJ,Rio de Janeiro
+34034959000593,Centro Universitário Arthur Sá Earp Neto,UNIFASE,RJ,Petrópolis
+34254055000140,SERRATEC - PARQUE TECNOLOGICO DA REGIAO SERRANA,SERRATEC,RJ,Petrópolis
+34621748000123,Universidade Federal do Pará,UFPA,PA,Belém
+34637953000187,Instituto Integrado de Ciência e Tecnologia,IN2,,
+34700153000163,Fundação de Tecnologia do Estado do Acre - FUNTAC,FUNTAC,AC,Rio Branco
+34717686000158,Ação Ecológica Guaporé,Ecoporé,RO,Porto Velho
+34792077000163,Universidade Federal de Roraima,UFRR,RR,Boa Vista
+34860833000144,Universidade do Estado do Pará,UEPA,PA,Belém
+34868257000181,Universidade Federal do Amapá,UNIFAP,AP,Macapá
+34927285000122,Instituto de Pesquisas Cientificas e Tecnologicas do Estado do Amapa,IEPA,,
+35834377000120,Universidade Federal de Catalão,UFCAT,GO,Catalão
+35840659000130,Universidade Federal de Jataí,UFJ,GO,Jataí
+35847316000106,Rede Brasileira de Certificação Pesquisa e Inovação,RBCIP,DF,Brasília
+35854176000195,Universidade Federal de Rondonópolis,UFR,MT,Rondonópolis
+35872812000101,Universidade Federal do Agreste de Pernambuco,UFAPE,,
+36601957000130,Instituto para Pesquisa do Câncer,IPEC,PR,Guarapuava
+36655012000100,Instituto de Inteligência Artificial na Saúde,NOHARM,,
+36662212000181,Associação Laboratório Interinstitucional de e-Astronomia,LIneA,RJ,Rio de Janeiro
+37115375000883,Ministerio do Meio Ambiente-  Serviço Florestal Brasileiro,SFB,DF,Brasília
+37115482000135,Polícia Civil do Distrito Federal,PCDF,,
+38178825000173,UNIVERSIDADE FEDERAL DO NORTE DO TOCANTINS - UFNT,UFNT,,
+39296970000111,"GEM - Grupo de Excelência Médica na Atenção, Pesquisa e Ensino da Saúde",GEM,PR,Londrina
+39773195000148,Instituto Mariano de Apoio à Pesquisa em DEAF1/DAND,Instituto DEAF1,,
+40738999000195,Universidade Estadual de Santa Cruz,UESC,BA,Ilhéus
+40830582000158,Fundação Força e Luz,EFL,RS,Porto Alegre
+41862338000130,INSTITUTO DE CIENCIA E TECNOLOGIA GRUPO EQUATORIAL,EQT LAB,MA,São Luís
+42435182000173,INSTITUTO DE PESQUISA E INOVACAO NA AGRICULTURA IRRIGADA DO CENTRO-OESTE,INOVAGRI CENTRO-OESTE,MS,Chapadão do Sul
+42441758000105,Centro Federal de Educação Tecnológica Celso Suckow da Fonseca,Cefet/RJ,,
+43061297000108,Universidade do Distrito Federal Professor Jorge Amaury Maia Nunes,UnDF,DF,Brasília
+43194197000150,"Instituto de Ciência, Tecnologia e de Inovação Sustentável Global",ICTISG,RJ,Rio de Janeiro
+43221219000123,Centro de Inovação e Desenvolvimento Sustentável da Amazônia - MAWÉ,Instituto Mawé,AM,Manaus
+43374768000480,Universidade Nove de Julho,UNINOVE,SP,São Paulo
+43588755000161,FUNDAÇÃO PARA O DESENVOLVIMENTO TECNOLÓGICO DA ENGENHARIA - FDTE,FDTE,SP,São Paulo
+43953702000100,Associação São Bento de Ensino,Uniara,,
+44031291000150,GRUTA TECH,G.T - Lab,,
+44392215000170,Universidade Municipal de São Caetano do Sul,USCS,SP,São Caetano do Sul
+45094889000151,FACULTAD INTERAMERICANA DE CIENCIAS SOCIALES,FICS,,
+45123124000100,Instituto Mário Schenberg,IMS,,
+45176153000122,Universidade de Taubaté,UNITAU,SP,Taubaté
+45358058000140,Universidade Federal de São Carlos,UFSCAR,SP,São Carlos
+45718988000167,ASSOCIAÇÃO CULTURAL DE RENOVAÇÃO TECNOLÓGICA SOROCABANA,ACRTS,,
+46020301000188,Pontifícia Universidade Católica de Campinas,PUC-CAMPINAS,SP,Campinas
+46068425000133,Universidade Estadual de Campinas,UNICAMP,SP,Campinas
+46374500000860,INSTITUTO DE INFECTOLOGIA EMILIO RIBAS,IIER,,
+46374500000941,Instituto Dante Pazzanese de Cardiologia,IDPC,SP,São Paulo
+46374500029095,HOSPITAL DAS CLÍNICAS DE BAURU,HCB,SP,Bauru
+46384400002354,Instituto Agronômico,IAC,SP,Campinas
+46384400002435,Instituto Biológico,IB,SP,São Paulo
+46384400002516,SAA - Instituto de Zootecnia,SAA-IZ,SP,Nova Odessa
+46384400002605,Instituto de Tecnologia de Alimentos,Ital,SP,Campinas
+46384400003326,INSTITUTO DE ECONOMIA AGRICOLA,IEA,SP,São Paulo
+48031918000124,Universidade Estadual Paulista Júlio de Mesquita Filho,UNESP,SP,São Paulo
+48031918000396,Faculdade de Engenharia e Ciências - Câmpus de Guaratinguetá,UNESP-FEG,,
+48031918000558,Instituto de Biociências do Câmpus do Litoral Paulista,IB/CLP,SP,São Vicente
+48031918001287,Faculdade de Ciências Agrárias e Veterinárias de Jaboticabal,FCAV-UNESP,SP,Jaboticabal
+48031918002178,Faculdade de Ciências Agronômicas - UNESP,FCA - UNESP,SP,Botucatu
+48031918002763,Universidade Estadual Paulista Júlio de Mesquita Filho - Instituto de Química,IQ,SP,Araraquara
+48031918004200,Centro de Estudos de Venenos e Animais Peçonhentos - Centro Nacional de Produção de Biofármacos e Biomoléculas,V-Biopharma,SP,Botucatu
+48539407000118,BASF SA,GBM,,
+49150352000112,Fundação Pio XII,PFIXII,SP,Barretos
+49269244001054,SAO PAULO SECRETARIA MUNICIPAL DE CULTURA -ARQUIVO HISTORICO DE SAO PAULO,AHM,SP,São Paulo
+50046887000127,Centro Infantil de Investigações Hematológicas Dr. Domingos A. Boldrini,CINHE,SP,Campinas
+50644053000113,FUNDAÇÃO ZERBINI,FZ,SP,São Paulo
+50753755000135,Fundação Doutor Amaral Carvalho,HAC,SP,Jaú
+51733129000140,Associação Brasileira de Ensaios Não Destrutivos e Inspeção,ABENDI,SP,São Paulo
+51798925000160,Instituto Sustentabilidade da Amazônia com Ciência e Inovação,iSACI,PA,Belém
+51946589000156,ADD+HEALTH INOVA SIMPLES (I.S.),ADD,,
+52229535000132,"Instituto Maximize Ciência, Tecnologia e Inovação",IMCTI,SP,São Paulo
+54072896000143,INSTITUTO PDK DE CIRCULARIDADE,IPDK,SP,São Paulo
+55405955000110,MEDLAB PRODUTOS DIAGNOSTICOS LTDA,Medlab,SP,São Paulo
+55983670000167,Associação de Ensino de Ribeirão Preto,AERP,SP,Ribeirão Preto
+56023443000152,HOSPITAL DAS CLÍNICAS DA FACULDADE DE MEDICINA DE RIBEIRÃO PRETO-USP,HCFMRP-USP,SP,Ribeirão Preto
+56089790003101,Instituto de Pesquisas Ambientais,IPA,,
+57485675000195,Instituto de Pesquisas Avançadas e Soluções Inovadoras,IPASI,PE,Bom Jardim
+58191008001568,Universidade Católica de Santos,UNISANTOS,SP,Santos
+59375085000135,INSTITUTO POLITECNICO DA MODA,IP MODA,BA,Ipirá
+59764555000152,Fundação de Ensino Octávio Bastos,UNIFEOB,,
+59929733000158,BIOPROSEG instituto de nanotecnologia e biotecnologia,BIOPROSEG,RS,Novo Hamburgo
+60191244000120,Universidade do Vale da Paraíba,UNIVAP,SP,São José dos Campos
+60255791000122,Fundação Hemocentro de Ribeirão Preto,FUNDHERP,SP,Ribeirão Preto
+60448040000122,Hospital das Clínicas da Faculdade de Medicina da Universidade de São Paulo,HCFMUSP,SP,São Paulo
+60453032000174,Universidade Federal de São Paulo,UNIFESP,SP,São Paulo
+60502242000105,Associação de Pais e Amigos dos Excepcionais de São Paulo,IJC,,
+60633674000155,Instituto de Pesquisas Tecnológicas do Estado de São Paulo S.A,IPT,SP,SAO PAULO
+60633674001046,INSTITUTO DE PESQUISAS TECNOLOGICAS DO ESTADO DE S.PAULO S/A IPT,IPT AMAZONIA,SP,São Paulo
+60742616000240,Casa de Saude Santa Marcelina,HSM,RO,Porto Velho
+60749736000199,Instituto Mauá de Tecnologia,IMT,SP,São Caetano do Sul
+60765823000130,Sociedade Beneficente Israelita Brasileira Hospital Albert Einstein,SBIBHAE,SP,São Paulo
+60961968000106,Fundação Antonio Prudente,FAP,SP,São Paulo
+60967551000150,INSTITUTO PRESBITERIANO MACKENZIE,MACKENZIE,SP,São Paulo
+60990751000124,Pontifícia Universidade Católica de São Paulo,PUC-SP,,
+61023156000344,Centro Universitário FEI,FEI,SP,São Bernardo do Campo
+61590410000124,SOCIEDADE BENEFICENTE DE SENHORAS - HOSPITAL SIRIO LIBANÊS,HSL,SP,São Paulo
+61795096000116,Associação Nikkei para Acesso a Cirurgia Estético-Reparadora,NASCER,MS,Dourados
+61821344000156,Instituto Butantan,IBU,SP,São Paulo
+62214645000184,ASSOCIACAO PIAUIENSE DE COORDENADORES DE REDES DE TI,Rede Piauiense,PI,Teresina
+62502418000154,HCITEC CENTRO DE EXCELENCIA EM SAUDE E INOVACAO TECNOLOGICA,HCITEC,MG,itajubá
+62678355000191,Instituto Brasileiro de Tecnologia - Business and Innovation,IBTec-BI,,
+62823257000109,CENTRO ESTADUAL DE EDUCACAO TECNOLOGICA PAULA SOUZA,CEETEPS,SP,São Paulo
+62823257017419,FATEC - CAPÃO BONITO,FATEC-CB,,
+63025530000104,Universidade de São Paulo,USP,SP,São Paulo
+63025530000619,Instituto de Física USP,IFUSP,SP,São Paulo
+63025530000708,Instituto de Geociências Universidade de São Paulo,IGc USP,SP,São Paulo
+63025530000961,Instituto de Química da Universidade de São Paulo,IQ USP,SP,São Paulo
+63025530001186,FACULDADE DE ARQUITETURA E URBANISMO E DE DESIGN DA UNIVERSIDADE DE SÃO PAULO,FAU-USP,,
+63025530001500,Faculdade de Ciências Farmacêuticas,FCF,SP,São Paulo
+63025530001771,Faculdade de Saúde Pública da USP,FSP/USP,SP,São Paulo
+63025530001933,Faculdade de Medicina Veterinária e Zootecnia da Universidade de São Paulo,FMVZ-USP,SP,São Paulo
+63025530002310,Escola de Enfermagem da Universidade de São Paulo,EEUSP,,
+63025530002409,Escola Politécnica da USP,EPUSP,SP,São Paulo
+63025530002662,Faculdade de Medicina de Ribeirão Preto,FMRP,SP,Ribeirão Preto
+63025530002824,Escola de Engenharia de São Carlos,EESC,SP,São Carlos
+63025530003049,INSTITUTO DE FÍSICA DE SÃO CARLOS,IFSC-USP,SP,São Carlos
+63025530003120,Instituto de Química de São Carlos - USP,IQSC/USP,SP,São Carlos
+63025530003634,"INSTITUTO DE ASTRONOMIA, GEOFÍSICA E CIÊNCIAS ATMOSFÉRICAS DA UNIVERSIDADE DE SÃO PAULO",IAG/USP,SP,São Paulo
+63025530003715,Instituto Oceanográfico da Universidade de São Paulo,IOUSP,SP,São Paulo
+63025530004282,Instituto de Energia e Ambiente da USP,IEE/USP,SP,São Paulo
+63025530008008,Faculdade de Ciências Farmacêuticas de Ribeirão Preto - USP,FCFRP-USP,SP,Ribeirão Preto
+63025530008199,Faculdade de Filosofia Ciências e Letras de Ribeirão Preto - USP,FFCLRP,SP,Ribeirão Preto
+63025530008350,Centro de Energia Nuclear na Agricultura,CENA,SP,PIRACICABA
+63025530009756,Faculdade de Zootecnia e Engenharia de Alimentos,FZEA,SP,Pirassununga
+63025530012382,Centro de Estudos do Genoma Humano e Células Tronco,CEGH-CEL,SP,São Paulo
+63418772000168,INSTITUTO PRO-CRIAR DE PESQUISA E INOVACAO,IPPI,,
+63678320000115,Fundação Hospitalar de Hematologia e Hemoterapia do Amazonas,FHEMOAM,AM,Manaus
+65172579000115,Universidade do Estado de Minas Gerais,Uemg,MG,Belo Horizonte
+69290435000114,Centro Cerâmico do Brasil,CCB,SP,Santa Gertrudes
+70499462000180,FUNDAÇÃO DE APOIO À PESQUISA AGROPEC. DE MATO GROSSO,Fundação MT,MT,Rondonópolis
+71487094000113,Universidade de Sorocaba - Mantida pela Fundação Dom Aguirre,UNISO,SP,Sorocaba
+73695868000127,ESCOLA DE SAÚDE PÚBLICA PAULO MARCELO MARTINS RODRIGUES,ESP/CE,CE,Fortaleza
+75095679000149,Universidade Federal do Paraná,UFPR,PR,Curitiba
+75101873000190,Universidade Tecnológica Federal do Paraná,UTFPR,PR,Curitiba
+75234757000149,Instituto de Desenvolvimento Rural do Paraná - IAPAR-EMATER,IDR-Paraná,PR,Curitiba
+76591049000128,LIGA PARANAENSE DE COMBATE AO CANCER,LPCC,PR,Curitiba
+76591569000130,Associação Hospitalar de Proteção à Infância Dr. Raul Carneiro,AHPIRC,PR,Curitiba
+76659820000151,Museu de Zoologia da Pontifícia Universidade Católica do Paraná,MZ-PUCPR,,
+76659820000313,Pontifícia Universidade Católica do Paraná,PUC-PR,PR,Curitiba
+77902914000172,Universidade Estadual do Centro-Oeste,UNICENTRO,PR,Guarapuava
+77964393000188,INSTITUTO DE TECNOLOGIA DO PARANA,TECPAR,PR,Curitiba
+78626363000124,Fundação Centros de Referência em Tecnologias Inovadoras,Fundação CERTI,SC,Florianópolis
+78640489000153,Universidade Estadual de Londrina,UEL,PR,Londrina
+78680337000184,Universidade Estadual do Oeste do Paraná,UNIOESTE,PR,Cascavel
+78791712000163,Universidade Positivo,UP,PR,Curitiba
+79151312000156,Universidade Estadual de Maringá,UEM,PR,Maringá
+80257355000108,Universidade Estadual de Ponta Grossa,UEPG,PR,Ponta Grossa
+81270548000153,UNIÃO OESTE PARANAENSE DE ESTUDOS E COMBATE AO CANCER,UOPECCAN,,
+82662958000102,Fundação Universidade Regional de Blumenau,FURB,SC,Blumenau
+82804642000108,Universidade Comunitária da Região de Chapecó - mantida pela Fundação Universitária do Desenvolvimento do Oeste,Unochapecó,SC,Chapecó
+83052191000162,Empresa de Pesquisa Agropecuária e Extensão Rural de Santa Catarina,Epagri,,
+83169623000110,Arquivo Histórico de Joinville / Secretaria de Cultura e Turismo / Prefeitura de Joinville,AHJ,SC,Joinville
+83649830000171,Associação Beneficente da Indústria Carbonífera de SC,SATC,,
+83661074000104,Universidade do Extremo Sul Catarinense,UNESC,SC,Criciúma
+83891283000136,Universidade do Estado de Santa Catarina,UDESC,SC,Florianópolis
+83899526000182,Universidade Federal de Santa Catarina,UFSC,SC,Florianópolis
+83900522000177,Fundação Catarinense de Educação Especial,FCEE,SC,São José
+84060564000100,Instituto Superior de Tecnologia Avançada,ISTA,PB,Campina Grande
+84307974000102,Fundação Universidade do Vale do Itajaí,UNIVALI,SC,Itajaí
+84592369000120,Universidade do Oeste de Santa Catarina,Unoesc,SC,Joaçaba
+84592369000201,Fundação Universidade do Oeste de Santa Catarina,UNOESC VIDEIRA,,
+84592369000554,Universidade do Oeste de Santa Catarina - Campus Xanxerê,UNOESC XANXERÊ,,
+84714682000194,Fundação Educacional da Região de Joinville,FURJ,SC,Joinville
+85784023000197,FUNDAÇÃO UNIVERSIDADE PARA O DESENVOLVIMENTO DO ALTO VALE DO ITAJAÍ,UNIDAVI,SC,Rio do Sul
+86445293000136,Fundação InoversaSul,FIS,SC,Tubarão
+86891363000180,Fundação Universidade Estadual de Mato Grosso do Sul,UEMS,MS,Dourados
+87020517000120,Hospital de Clinicas de Porto Alegre- HCPA,HCPA,RS,Porto Alegre
+87190161000173,"Instituto Brasileiro de Tecnologia do Couro, Calçado e Artefatos",IBTeC,RS,Novo Hamburgo
+88630413000109,União Brasileira de Educação e Assistência,UBEA,RS,Porto Alegre
+88630413000281,Pontifícia Universidade Católica do Rio Grande do Sul,PUCRS,RS,Porto Alegre
+88648761000103,Universidade de Caxias do Sul,UCS,RS,Caxias do Sul
+90090762000119,FUNDAÇÃO ESCOLA SUPERIOR DO MINISTÉRIO PÚBLICO DO RIO GRANDE DO SUL,FMP,RS,Porto Alegre
+90738014000108,"Fundação de Integração, Desenvolvimento e Educação do Noroeste do Estado do Rio Grande do Sul",FIDENE,RS,Ijuí
+91683474000130,Fundação Escola Técnica Liberato Salzano Vieira da Cunha,FETLSVC,RS,Novo Hamburgo
+91693531000162,Associação Pró-Ensino Superior em Novo Hamburgo,ASPEUR,RS,Novo Hamburgo
+91987024000131,Fundação Proamb,Proamb,,
+92034321000125,Universidade de Passo Fundo,UPF,RS,Passo Fundo
+92238914000103,Associação Pelotense de Assistência e Cultura,APAC-UCPEL,RS,Pelotas
+92242080000100,Universidade Federal de Pelotas,UFPel,RS,Pelotas
+92741990004043,Universidade La Salle,Unilasalle,RS,Canoas
+92787118000120,Hospital Nossa Senhora da Conceição - Grupo Hospitalar Conceição,GHC,RS,Porto Alegre
+92898550000198,Fundação Universitária de Cardiologia,FUC,RS,Porto Alegre
+92959006000885,Universidade do Vale do Rio dos Sinos,UNISINOS,RS,São Leopoldo
+92967595000177,Fundação Universidade Federal de Ciências da Saúde de Porto Alegre,UFCSPA,RS,Porto Alegre
+92969856000198,Universidade Federal do Rio Grande do Sul,UFRGS,,
+93021632009330,CENTRO ESTADUAL DE DIAGNÓSTICO E PESQUISA EM SAÚDE ANIMAL DESIDÉRIO FINAMOR,IPVDF,RS,Eldorado do Sul
+94877586000110,Universidade Federal do Rio Grande,FURG,RS,Rio Grande
+95438412000114,Associação Pró-Ensino em Santa Cruz do Sul,APESC,RS,Santa Cruz do Sul
+95438412000203,Universidade de Santa Cruz do Sul,UNISC,,
+95591764000105,Universidade Federal de Santa Maria,UFSM,RS,Santa Maria
+95606380002243,Universidade Franciscana,UFN,RS,Santa Maria
+96216841000100,Fundação Regional Integrada - FuRI,FuRI,,
+96216841000614,Fundação Regional Integrada,URI,RS,Erechim
+96216841000703,Universidade Regional Integrada do Alto Uruguai e das Missões,URI Câmpus de Erechim,RS,Erechim
+96499728000189,VENTURUS CENTRO DE INOVAÇÃO TECNOLÓGICA,VNT,SP,Campinas
+96746441001340,FACULDADE HORIZONTINA,FAHOR,,
+string,string,string,st,string
