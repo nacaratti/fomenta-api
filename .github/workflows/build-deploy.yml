@@ -35,8 +35,28 @@ jobs:
       - name: Testes
         run: python -m pytest -q
 
+      # Última coleta boa de cada fonte. Se o site da fonte falhar (já aconteceu com
+      # o certificado da FINEP), o build segue com estes arquivos e a data de
+      # posição na API mostra a idade real dos dados.
+      - name: Fontes da última coleta
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p build/cache/finep build/cache/capes
+          gh release download fontes-finep -D build/cache/finep --clobber || echo "sem cache da FINEP"
+          gh release download fontes-capes -D build/cache/capes --clobber || echo "sem cache da CAPES"
+
       - name: Build dos dados (baixa FINEP e CAPES)
         run: python -m pipeline.build
+
+      - name: Guardar as fontes desta coleta
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          for src in finep capes; do
+            gh release view "fontes-$src" >/dev/null 2>&1 ||               gh release create "fontes-$src" --latest=false --title "Fontes: $src (última coleta)"                 --notes "Arquivos brutos da última coleta boa. Usados pelo build quando o site da fonte falha."
+            gh release upload "fontes-$src" build/cache/$src/* --clobber
+          done
 
       - name: Release de dados
         env:

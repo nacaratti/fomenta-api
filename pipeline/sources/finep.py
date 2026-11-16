@@ -83,12 +83,17 @@ def _date(v: object) -> date | None:
 
 def download(dest: Path) -> None:
     dest.mkdir(parents=True, exist_ok=True)
+    # Baixa os dois arquivos antes de trocar os antigos: uma falha no meio não
+    # deixa uma Contratação nova com uma Liberação velha.
+    fetched = {}
     with httpx.Client(timeout=300, follow_redirects=True, headers={"User-Agent": "Mozilla/5.0"}) as c:
         for name in FILES:
             log.info("FINEP: baixando %s", name)
             r = c.get(URL.format(name=name))
             r.raise_for_status()
-            (dest / name).write_bytes(r.content)
+            fetched[name] = r.content
+    for name, content in fetched.items():
+        (dest / name).write_bytes(content)
 
 
 @dataclass

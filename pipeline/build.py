@@ -79,16 +79,33 @@ def _insert(con: duckdb.DuckDBPyConnection, table: str, rows: list[dict[str, Any
     con.unregister("_rows")
 
 
+def _fetch(name: str, fn, directory: Path, required: str) -> str | None:
+    """Baixa uma fonte. Se falhar e houver arquivos da última coleta boa em `directory`
+    (no GitHub Actions eles vêm da Release `fontes-<nome>`), segue com eles e devolve o
+    erro — a data de posição sai dos próprios arquivos, então a API mostra a idade real."""
+    try:
+        fn(directory)
+        return None
+    except Exception as e:  # noqa: BLE001 — qualquer falha de rede/servidor da fonte
+        if not any(directory.glob(required)):
+            raise
+        msg = f"{type(e).__name__}: {str(e)[:200]}"
+        log.warning("%s: download falhou (%s); usando os arquivos da última coleta", name, msg)
+        return msg
+
+
 def load_sources(cache: Path, download: bool, only: set[str]) -> list[SourceData]:
     out = []
     if "finep" in only:
-        if download:
-            finep.download(cache / "finep")
+        err = _fetch("finep", finep.download, cache / "finep", "Liberacao.xlsx") if download else None
         out.append(finep.parse(cache / "finep"))
+        if err:
+            out[-1].stats["download_falhou"] = err
     if "capes" in only:
-        if download:
-            capes.download(cache / "capes")
+        err = _fetch("capes", capes.download, cache / "capes", "*.csv") if download else None
         out.append(capes.parse(cache / "capes"))
+        if err:
+            out[-1].stats["download_falhou"] = err
     if "cnpq" in only:
         out.append(cnpq.parse())
     return out

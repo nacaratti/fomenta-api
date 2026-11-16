@@ -78,15 +78,24 @@ def download(dest: Path) -> None:
         r = c.get(API, params={"id": DATASET})
         r.raise_for_status()
         result = r.json()["result"]
-        # Última atualização do conjunto no portal = posição dos dados.
-        (dest / POSITION_FILE).write_text(result["metadata_modified"][:10], encoding="utf-8")
+        fetched = {}
         for res in result["resources"]:
             if (res.get("format") or "").upper() != "CSV":
                 continue
-            log.info("CAPES: baixando %s", res["url"].rsplit("/", 1)[-1])
+            name = res["url"].rsplit("/", 1)[-1]
+            log.info("CAPES: baixando %s", name)
             data = c.get(res["url"])
             data.raise_for_status()
-            (dest / res["url"].rsplit("/", 1)[-1]).write_bytes(data.content)
+            fetched[name] = data.content
+    if not fetched:
+        raise RuntimeError("CAPES: o conjunto não listou nenhum CSV")
+    # Só troca os arquivos depois de baixar todos (o conjunto é a união das janelas de anos).
+    for old in dest.glob("*.csv"):
+        old.unlink()
+    for name, content in fetched.items():
+        (dest / name).write_bytes(content)
+    # Última atualização do conjunto no portal = posição dos dados.
+    (dest / POSITION_FILE).write_text(result["metadata_modified"][:10], encoding="utf-8")
 
 
 def parse(directory: Path) -> SourceData:
