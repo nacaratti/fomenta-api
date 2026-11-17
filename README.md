@@ -85,7 +85,8 @@ No Python: `duckdb.read_parquet("funding_award.parquet").df()`.
 
 ## Deploy
 
-Projeto na conta da Vercel dedicada à API, com deploy pelo GitHub Actions
-(`.github/workflows/build-deploy.yml`). Segredos do repositório: `VERCEL_TOKEN`,
-`VERCEL_ORG_ID`, `VERCEL_PROJECT_ID` (o `vercel link` local gera os dois IDs em
-`.vercel/project.json`).
+O GitHub Actions (`.github/workflows/build-deploy.yml`) monta os dados e publica a branch
+**`deploy`**: um commit único, reescrito a cada build, só com `api/`, `vercel.json`,
+`requirements.txt` e `build/` (banco, manifesto e JSON estáticos). O projeto na Vercel (conta
+própria da API, ligado ao repositório pelo painel) usa `deploy` como branch de produção; a `main`
+não gera deploy (`git.deploymentEnabled` no `vercel.json`), porque nela não há banco.

@@ -1,11 +1,24 @@
 {
+  "git": {
+    "deploymentEnabled": {
+      "main": false
+    }
+  },
   "builds": [
     {
       "src": "api/index.py",
       "use": "@vercel/python",
-      "config": { "includeFiles": ["build/fomenta.duckdb", "build/manifest.json"] }
+      "config": {
+        "includeFiles": [
+          "build/fomenta.duckdb",
+          "build/manifest.json"
+        ]
+      }
     },
-    { "src": "build/static/**", "use": "@vercel/static" }
+    {
+      "src": "build/static/**",
+      "use": "@vercel/static"
+    }
   ],
   "routes": [
     {
@@ -35,6 +48,9 @@
         "Access-Control-Allow-Origin": "*"
       }
     },
-    { "src": "/(.*)", "dest": "/api/index.py" }
+    {
+      "src": "/(.*)",
+      "dest": "/api/index.py"
+    }
   ]
 }

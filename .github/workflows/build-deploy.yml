@@ -1,7 +1,7 @@
 name: build-deploy
 
 # Monta o fomenta.duckdb a partir das fontes oficiais, publica os dados numa
-# Release e faz o deploy da API na Vercel (conta própria da API).
+# Release e publica a branch `deploy`, que a Vercel (conta própria da API) põe no ar.
 on:
   schedule:
     - cron: "0 9 * * 1"   # segunda, 06:00 em Brasília (a FINEP atualiza toda semana)
@@ -71,12 +71,21 @@ jobs:
               --notes "Gerado pelo build-deploy. Posição de cada fonte em manifest.json."
           fi
 
-      - name: Deploy na Vercel
-        env:
-          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
-          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+      # A Vercel (ligada ao repositório pelo painel) publica a branch `deploy`.
+      # Ela recebe só o que a função precisa — API, banco e respostas estáticas —
+      # num commit único, reescrito a cada build: o histórico não acumula os
+      # binários do banco.
+      - name: Publicar a branch deploy
         run: |
-          npm install --global vercel@latest
-          vercel pull --yes --environment=production --token="$VERCEL_TOKEN"
-          vercel deploy --prod --token="$VERCEL_TOKEN"
+          rm -rf /tmp/deploy && mkdir -p /tmp/deploy/build
+          cp -r api requirements.txt vercel.json /tmp/deploy/
+          cp -r build/fomenta.duckdb build/manifest.json build/static /tmp/deploy/build/
+          printf '__pycache__/
+' > /tmp/deploy/.gitignore
+          cd /tmp/deploy
+          git init -q -b deploy
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -q -m "deploy: dados de $(date -u +%Y-%m-%d) (código ${GITHUB_SHA::7})"
+          git push -q -f "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" deploy
