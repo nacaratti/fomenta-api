@@ -46,6 +46,13 @@ jobs:
           gh release download fontes-finep -D build/cache/finep --clobber || echo "sem cache da FINEP"
           gh release download fontes-capes -D build/cache/capes --clobber || echo "sem cache da CAPES"
 
+      # Retrato da plataforma (editais, congressos, PNIPE, sinergia, Elos), exportado do
+      # Supabase do FomentaBR por tools/export_supabase_snapshot.py. Por enquanto, único.
+      - name: Retrato da plataforma
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release download snapshot-plataforma -D build/snapshot --clobber
+
       - name: Build dos dados (baixa FINEP e CAPES)
         run: python -m pipeline.build
 

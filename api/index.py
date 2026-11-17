@@ -8,8 +8,6 @@ todas as rotas passam por aqui.
 from __future__ import annotations
 
 import sys
-from collections import defaultdict
-from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
@@ -19,10 +17,18 @@ from fastapi.middleware.cors import CORSMiddleware  # noqa: E402
 from fastapi.responses import RedirectResponse  # noqa: E402
 
 from api import queries  # noqa: E402
+from api.guard import guard as _guard  # noqa: E402
+from api.plataforma import ROUTERS  # noqa: E402
 
 DESCRIPTION = """
-Dados abertos do **Fomenta** sobre fomento à pesquisa no Brasil. Nesta versão: **investimentos em PD&I**
-da FINEP, da CAPES (PROAP/PROEX) e do CNPq (bolsas e auxílios), ligados às instituições do cadastro do PNIPE.
+Dados abertos do **Fomenta** sobre fomento e infraestrutura de pesquisa no Brasil:
+
+- **Investimentos em PD&I** da FINEP, da CAPES (PROAP/PROEX) e do CNPq (bolsas e auxílios);
+- **Editais** de fomento e **congressos** científicos coletados pelo FomentaBR;
+- **Infraestrutura** do PNIPE: instituições, laboratórios e equipamentos;
+- **Sinergia** entre laboratórios e **Elos**, os pesquisadores e as coautorias (OpenAlex).
+
+Editais, congressos, PNIPE, sinergia e Elos vêm de um retrato do banco do FomentaBR; a data está em `/v1/meta`.
 
 - Valores **nominais**, em reais, sem correção pela inflação.
 - Cada financiador conta de um jeito (a FINEP traz projetos e liberações; CAPES e CNPq, o valor pago no ano).
@@ -30,31 +36,10 @@ da FINEP, da CAPES (PROAP/PROEX) e do CNPq (bolsas e auxílios), ligados às ins
 - `data_as_of` é a posição informada pela própria fonte; `imported_at`, quando o Fomenta importou.
 - Os dados completos (DuckDB e Parquet) ficam nas Releases do repositório, para análise offline.
 """
-CACHE = "public, s-maxage=86400, stale-while-revalidate=604800"  # o dado só muda a cada deploy
-RATE_LIMIT = 120  # requisições por minuto, por IP e por instância (defesa leve)
 
-app = FastAPI(title="Fomenta API", version="1.0.0", description=DESCRIPTION,
+app = FastAPI(title="Fomenta API", version="1.1.0", description=DESCRIPTION,
               docs_url="/v1/docs", redoc_url=None, openapi_url="/v1/openapi.json")
 app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["GET"], allow_headers=["*"])
-
-_hits: dict[str, list[datetime]] = defaultdict(list)
-
-
-def _client_ip(request: Request) -> str:
-    return ((request.headers.get("x-real-ip") or "").strip()
-            or (request.headers.get("x-forwarded-for") or "").split(",")[0].strip()
-            or (request.client.host if request.client else "unknown"))
-
-
-def _guard(request: Request, response: Response) -> None:
-    ip, now = _client_ip(request), datetime.now(timezone.utc)
-    recent = [t for t in _hits[ip] if t >= now - timedelta(minutes=1)]
-    if len(recent) >= RATE_LIMIT:
-        _hits[ip] = recent
-        raise HTTPException(429, "Muitas requisições. Tente de novo em alguns instantes.", headers={"Retry-After": "60"})
-    _hits[ip] = [*recent, now]
-    response.headers["Cache-Control"] = CACHE
-
 
 investimentos = APIRouter(prefix="/v1/investimentos", tags=["Investimentos"])
 instituicoes = APIRouter(prefix="/v1/instituicoes", tags=["Instituições"])
@@ -119,3 +104,5 @@ def institution(cnpj: str, request: Request, response: Response) -> dict:
 
 app.include_router(investimentos)
 app.include_router(instituicoes)
+for _r in ROUTERS:
+    app.include_router(_r)

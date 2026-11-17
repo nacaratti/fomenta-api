@@ -37,6 +37,8 @@ ROOT = Path(__file__).resolve().parents[1]
 SCHEMA_VERSION = 1
 # Mínimo de awards por fonte para o build ser aceito (protege contra planilha vazia/formato novo).
 MIN_AWARDS = {"finep": 10_000, "capes": 5_000, "cnpq": 1_000}
+# O banco vai num commit da branch `deploy`: o GitHub recusa arquivo acima de 100 MB.
+MAX_DB_BYTES = 95 * 1024 * 1024
 
 SCHEMA = """
 CREATE TABLE funding_source (
@@ -111,6 +113,31 @@ def load_sources(cache: Path, download: bool, only: set[str]) -> list[SourceData
     return out
 
 
+def load_snapshot(con: duckdb.DuckDBPyConnection, snapshot: Path) -> dict[str, Any]:
+    """Tabelas da plataforma (editais, congressos, PNIPE, sinergia, Elos) a partir do retrato
+    exportado do Supabase (`tools/export_supabase_snapshot.py`, Release `snapshot-plataforma`)."""
+    meta_path = snapshot / "snapshot.json"
+    if not meta_path.exists():
+        raise SystemExit(f"Retrato da plataforma não encontrado em {snapshot} (snapshot.json)")
+    meta = json.loads(meta_path.read_text(encoding="utf-8"))
+    # Busca sem acento e sem caixa, pré-calculada na criação (um UPDATE depois deixaria
+    # blocos mortos no arquivo, que precisa ficar abaixo de 100 MB para ir à branch deploy).
+    busca = {
+        "edital": "concat_ws(' ', title, description_summary)",
+        "congresso": "concat_ws(' ', title, acronym, location)",
+        "pnipe_institution": "concat_ws(' ', social_reason, initials, city)",
+        "pnipe_laboratory": "concat_ws(' ', name, initials, about)",
+        "pnipe_equipment": "concat_ws(' ', name, initials, brand, model)",
+        "elos_researcher": "nome",
+    }
+    for name in meta["tables"]:
+        path = (snapshot / f"{name}.parquet").as_posix()
+        extra = f", lower(strip_accents({busca[name]})) AS busca" if name in busca else ""
+        con.execute(f"CREATE TABLE {name} AS SELECT *{extra} FROM read_parquet('{path}')")
+    log.info("plataforma: %d tabelas do retrato de %s", len(meta["tables"]), meta["exported_at"])
+    return meta
+
+
 def validate(src: SourceData, released: float, approved: float) -> list[str]:
     errors = []
     if len(src.awards) < MIN_AWARDS.get(src.id, 1):
@@ -122,7 +149,7 @@ def validate(src: SourceData, released: float, approved: float) -> list[str]:
     return errors
 
 
-def build(out: Path, cache: Path, download: bool, only: set[str]) -> dict[str, Any]:
+def build(out: Path, cache: Path, download: bool, only: set[str], snapshot: Path | None) -> dict[str, Any]:
     sources = load_sources(cache, download, only)
     tmp = out / "fomenta.duckdb.tmp"
     tmp.parent.mkdir(parents=True, exist_ok=True)
@@ -188,6 +215,7 @@ def build(out: Path, cache: Path, download: bool, only: set[str]) -> dict[str, A
                round(sum(a.approved_value), 2) AS approved, round(sum(a.released_value), 2) AS released
         FROM funding_award a JOIN funding_award_institution l ON l.award_id = a.id
         GROUP BY ALL ORDER BY 1, 2, 3""")
+    platform = load_snapshot(con, snapshot) if snapshot else None
     con.execute("CHECKPOINT")
 
     shutil.rmtree(out / "parquet", ignore_errors=True)
@@ -200,6 +228,11 @@ def build(out: Path, cache: Path, download: bool, only: set[str]) -> dict[str, A
         "SELECT id, name, notes, data_as_of, imported_at, summary, source_urls FROM funding_source ORDER BY sort_order"
     ).fetchall()
     con.close()
+    if tmp.stat().st_size > MAX_DB_BYTES:
+        size = tmp.stat().st_size / 1e6
+        tmp.unlink()
+        raise SystemExit(f"Build recusado: fomenta.duckdb com {size:.1f} MB passa do teto de 95 MB "
+                         "(o GitHub recusa arquivos acima de 100 MB na branch deploy). Divida o banco.")
     final = out / "fomenta.duckdb"
     final.unlink(missing_ok=True)
     tmp.rename(final)
@@ -221,7 +254,7 @@ def build(out: Path, cache: Path, download: bool, only: set[str]) -> dict[str, A
         files.append({"path": p.relative_to(out).as_posix(), "bytes": p.stat().st_size,
                       "sha256": hashlib.sha256(p.read_bytes()).hexdigest()})
     manifest = {"schema_version": SCHEMA_VERSION, "built_at": imported_at, "sources": manifest_sources,
-                "files": files}
+                "plataforma": platform, "files": files}
     _dump(out / "manifest.json", manifest)
     _dump(static / "meta.json", manifest)
     return manifest
@@ -233,10 +266,14 @@ def main() -> None:
     p.add_argument("--cache", type=Path, default=ROOT / "build" / "cache")
     p.add_argument("--no-download", action="store_true", help="usar os arquivos já em --cache")
     p.add_argument("--only", default="finep,capes,cnpq", help="fontes, separadas por vírgula")
+    p.add_argument("--snapshot", type=Path, default=ROOT / "build" / "snapshot",
+                   help="retrato da plataforma (Parquet + snapshot.json)")
+    p.add_argument("--sem-plataforma", action="store_true", help="só investimentos, sem o retrato")
     args = p.parse_args()
     logging.basicConfig(level=logging.INFO, format="%(message)s")
     logging.getLogger("httpx").setLevel(logging.WARNING)
-    m = build(args.out, args.cache, not args.no_download, set(args.only.split(",")))
+    m = build(args.out, args.cache, not args.no_download, set(args.only.split(",")),
+              None if args.sem_plataforma else args.snapshot)
     for s in m["sources"]:
         print(f"{s['id']:6s} posição {s['data_as_of']}  registros {s['projects']:>6}  "
               f"aprovado R$ {s['approved_total']:>18,.2f}  pago R$ {s['released_total']:>18,.2f}")
