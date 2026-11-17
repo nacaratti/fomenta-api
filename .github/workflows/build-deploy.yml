@@ -80,8 +80,7 @@ jobs:
           rm -rf /tmp/deploy && mkdir -p /tmp/deploy/build
           cp -r api requirements.txt vercel.json /tmp/deploy/
           cp -r build/fomenta.duckdb build/manifest.json build/static /tmp/deploy/build/
-          printf '__pycache__/
-' > /tmp/deploy/.gitignore
+          echo '__pycache__/' > /tmp/deploy/.gitignore
           cd /tmp/deploy
           git init -q -b deploy
           git config user.name "github-actions[bot]"
