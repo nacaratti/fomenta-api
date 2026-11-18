@@ -37,15 +37,23 @@ Documentação interativa em `/v1/docs`.
 | `GET /v1/laboratorios` · `/laboratorios/{id}` | laboratórios; filtros `uf`, `cnpj`, `area`, `q`; o detalhe lista os equipamentos |
 | `GET /v1/equipamentos` · `/equipamentos/{id}` | equipamentos; filtros `uf`, `cnpj`, `laboratorio`, `multiusuario`, `q` |
 | `GET /v1/sinergia/grafos` · `/grafos/{chave}` · `/laboratorios/{id}` | grafos por área, nós e arestas (`base`, `relacao`), perfil de um laboratório |
-| `GET /v1/elos/pesquisadores` · `/pesquisadores/{id}` | pesquisadores; filtros `cnpj`, `laboratorio`, `tema`, `q`; perfil com laboratórios, temas e coautores |
-| `GET /v1/elos/laboratorios/{id}` · `/laboratorios/{id}/coautorias` · `/v1/elos/temas` | equipe, laboratórios que copublicam e temas |
+| `GET /v1/elos/pesquisadores` · `/pesquisadores/{id}` | pesquisadores; filtros `cnpj`, `laboratorio`, `papel` (responsavel, equipe, coautor), `origem`, `tema`, `q`; perfil com laboratórios, temas e coautores |
+| `GET /v1/elos/pesquisadores/{id}/coautores` · `/afinidades` | todos os coautores, com as publicações em comum; quem pesquisa temas parecidos e nunca publicou junto |
+| `GET /v1/elos/laboratorios/{id}` · `/laboratorios/{id}/coautorias` · `/v1/elos/temas` | responsável, equipe e coautores do responsável; laboratórios que copublicam; temas |
+
+**Elos ampliado.** Na API, todo pesquisador que publicou com o responsável de um laboratório desde 2019
+fica ligado a ele com o papel `coautor`, com o número de publicações em comum e as mais recentes como
+evidência (links do OpenAlex). Coautores de fora da base entram com nome, ORCID e instituição da
+publicação mais recente. Também voltam os dados que o site corta por espaço no Supabase: 10 temas por
+responsável, coautorias sem teto, até 20 afinidades e todos os pares de laboratórios. O Elos fica em
+`elos.duckdb`, ao lado do `fomenta.duckdb` (cada arquivo precisa ficar abaixo de 100 MB).
 
 A busca `q` não diferencia acento nem caixa, e cada palavra precisa aparecer.
 
 **Privacidade.** Ficam fora da API e dos arquivos: o contato pessoal dos laboratórios (nome,
 telefone e e-mail do responsável), qualquer pesquisador com pedido de remoção (aprovado ou
 pendente) no Elos, vínculos pesquisador–laboratório com confiança abaixo de 0,8 e os relatórios
-internos de carga.
+internos de carga. Os pedidos de remoção valem também para os coautores.
 
 Somente GET, CORS aberto, `Cache-Control` de 1 dia na CDN (o dado só muda a cada deploy) e
 120 requisições por minuto por IP. Valores **nominais**; **não some financiadores diferentes**
@@ -75,6 +83,10 @@ Só leitura no banco do FomentaBR; depois suba os arquivos na Release `snapshot-
 
 ```
 DATABASE_URL=postgresql://... python tools/export_supabase_snapshot.py
+# Elos ampliado, a partir do cache do OpenAlex (sem gasto de cota); no FomentaBR:
+PYTHONPATH=src python <fomenta-api>/tools/elos_ampliado.py calcular --saida elos.pkl.gz
+# de volta aqui (substitui as tabelas elos_* do retrato):
+python tools/elos_ampliado.py exportar elos.pkl.gz
 gh release upload snapshot-plataforma build/snapshot/* --clobber
 ```
 

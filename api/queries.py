@@ -21,11 +21,27 @@ MAX_PER_PAGE = 100
 
 @lru_cache(maxsize=1)
 def _connection() -> duckdb.DuckDBPyConnection:
-    return duckdb.connect(str(DB_PATH), read_only=True)
+    con = duckdb.connect(str(DB_PATH), read_only=True)
+    # O Elos fica em elos.duckdb, ao lado (cada arquivo < 100 MB). Com o search_path, as tabelas
+    # dos dois bancos são lidas pelo nome simples, inclusive em JOIN entre eles.
+    elos = DB_PATH.with_name("elos.duckdb")
+    if elos.exists():
+        con.execute(f"ATTACH '{elos.as_posix()}' AS elos (READ_ONLY)")
+    return con
+
+
+@lru_cache(maxsize=1)
+def _search_path() -> str | None:
+    names = {r[0] for r in _connection().execute("SELECT database_name FROM duckdb_databases()").fetchall()}
+    return f"SET search_path = '{DB_PATH.stem}.main,elos.main'" if "elos" in names else None
 
 
 def cursor() -> duckdb.DuckDBPyConnection:
-    return _connection().cursor()
+    cur = _connection().cursor()
+    sp = _search_path()
+    if sp:
+        cur.execute(sp)  # vale por conexão: cada cursor precisa do seu
+    return cur
 
 
 def _iso(v: Any) -> str | None:

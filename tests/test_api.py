@@ -36,6 +36,7 @@ def client(tmp_path_factory):
     from api import index, queries
     queries.DB_PATH = db
     queries._connection.cache_clear()
+    queries._search_path.cache_clear()
     return TestClient(index.app)
 
 

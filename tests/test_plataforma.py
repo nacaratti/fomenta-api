@@ -70,15 +70,21 @@ def client(tmp_path_factory):
                                 {"base": "equipment", "token_id": 2, "label": "Microscópio"}],
         "elos_researcher": [{"id": "A1", "openalex_ids": ["A1"], "orcid": None, "nome": "Ana Pérez", "inst_cnpj": "63025530000104",
                              "publicacoes": 10, "citacoes": 5, "h_index": 2, "desde_2019": 4, "ultimo_ano": 2025,
-                             "grandes_areas": ["1"], "atualizado_em": PAST},
+                             "grandes_areas": ["1"], "atualizado_em": PAST, "origem": "responsavel",
+                             "instituicao_openalex": "I1", "instituicao_nome": "Universidade de São Paulo", "instituicao_sigla": "USP", "instituicao_pais": "BR"},
                             {"id": "A2", "openalex_ids": ["A2"], "orcid": None, "nome": "Bruno Lima", "inst_cnpj": None,
                              "publicacoes": 3, "citacoes": 1, "h_index": 1, "desde_2019": 1, "ultimo_ano": 2024,
-                             "grandes_areas": ["1"], "atualizado_em": PAST}],
-        "elos_researcher_lab": [{"researcher_id": "A1", "lab_id": 5, "papel": "responsavel", "confianca": 1.0}],
+                             "grandes_areas": ["1"], "atualizado_em": PAST, "origem": "coautor",
+                             "instituicao_openalex": "I9", "instituicao_nome": "Universidad de Chile", "instituicao_sigla": None, "instituicao_pais": "CL"}],
+        "elos_researcher_lab": [{"researcher_id": "A1", "lab_id": 5, "papel": "responsavel", "confianca": 1.0,
+                                 "responsavel_id": None, "publicacoes_em_comum": None, "ultimo_ano": None, "obras": None},
+                                {"researcher_id": "A2", "lab_id": 5, "papel": "coautor", "confianca": 1.0,
+                                 "responsavel_id": "A1", "publicacoes_em_comum": 2, "ultimo_ano": 2024,
+                                 "obras": ["W2", "W1"]}],
         "elos_researcher_topic": [{"researcher_id": "A1", "topic_id": "T1", "n": 3}],
         "elos_topic": [{"id": "T1", "nome": "Mass Spectrometry", "subarea": "s", "area": "a", "dominio": "d",
                         "field_id": 1, "grande_area": "1"}],
-        "elos_edge": [{"a": "A1", "b": "A2", "tipo": "coautoria", "peso": 2.0, "temas_comuns": None, "ultimo_ano": 2024}],
+        "elos_edge": [{"a": "A1", "b": "A2", "tipo": "coautoria", "peso": 2.0, "ultimo_ano": 2024, "obras": ["W2", "W1"]}],
         "elos_lab_link": [{"lab_a": 5, "lab_b": 6, "coautorias": 4, "pessoas": ["A1"]}],
     }
     for name, rows in tables.items():
@@ -99,6 +105,7 @@ def client(tmp_path_factory):
     from api import index, queries
     queries.DB_PATH = db
     queries._connection.cache_clear()
+    queries._search_path.cache_clear()
     return TestClient(index.app)
 
 
@@ -150,3 +157,19 @@ def test_elos(client):
     assert p["laboratorios"][0]["papel"] == "responsavel" and p["coautores"][0]["id"] == "A2"
     assert client.get("/v1/elos/laboratorios/5/coautorias").json()["items"][0]["coautorias"] == 4
     assert client.get("/v1/elos/pesquisadores/X").status_code == 404
+
+
+def test_elos_coautor_do_responsavel(client):
+    # quem publicou com o responsável fica ligado ao laboratório, com evidência
+    co = client.get("/v1/elos/pesquisadores", params={"laboratorio": 5, "papel": "coautor"}).json()
+    assert [x["id"] for x in co["items"]] == ["A2"] and co["items"][0]["pais"] == "CL"
+    lab = client.get("/v1/elos/laboratorios/5").json()
+    assert [x["id"] for x in lab["pesquisadores"]] == ["A1"] and lab["total_coautores"] == 1
+    c = lab["coautores"][0]
+    assert c["publicacoes_com_responsavel"] == 2 and c["publicacoes"][0] == "https://openalex.org/W2"
+    p = client.get("/v1/elos/pesquisadores/A2").json()
+    assert p["laboratorios"][0]["papel"] == "coautor" and p["laboratorios"][0]["responsavel"]["nome"] == "Ana Pérez"
+    todos = client.get("/v1/elos/pesquisadores/A1/coautores").json()
+    assert todos["total"] == 1 and todos["items"][0]["publicacoes_em_comum"] == 2
+    assert client.get("/v1/elos/pesquisadores", params={"q": "chile"}).json()["total"] == 1  # busca pela instituição
+    assert client.get("/v1/elos/pesquisadores", params={"papel": "chefe"}).status_code == 422

@@ -113,7 +113,8 @@ def load_sources(cache: Path, download: bool, only: set[str]) -> list[SourceData
     return out
 
 
-def load_snapshot(con: duckdb.DuckDBPyConnection, snapshot: Path) -> dict[str, Any]:
+def load_snapshot(con: duckdb.DuckDBPyConnection, snapshot: Path,
+                  elos_con: duckdb.DuckDBPyConnection | None = None) -> dict[str, Any]:
     """Tabelas da plataforma (editais, congressos, PNIPE, sinergia, Elos) a partir do retrato
     exportado do Supabase (`tools/export_supabase_snapshot.py`, Release `snapshot-plataforma`)."""
     meta_path = snapshot / "snapshot.json"
@@ -128,12 +129,15 @@ def load_snapshot(con: duckdb.DuckDBPyConnection, snapshot: Path) -> dict[str, A
         "pnipe_institution": "concat_ws(' ', social_reason, initials, city)",
         "pnipe_laboratory": "concat_ws(' ', name, initials, about)",
         "pnipe_equipment": "concat_ws(' ', name, initials, brand, model)",
-        "elos_researcher": "nome",
+        "elos_researcher": "concat_ws(' ', nome, instituicao_nome, instituicao_sigla)",
     }
     for name in meta["tables"]:
         path = (snapshot / f"{name}.parquet").as_posix()
         extra = f", lower(strip_accents({busca[name]})) AS busca" if name in busca else ""
-        con.execute(f"CREATE TABLE {name} AS SELECT *{extra} FROM read_parquet('{path}')")
+        # O Elos (centenas de milhares de pessoas e coautorias) vai para um arquivo à parte: cada
+        # arquivo precisa ficar abaixo de 100 MB para entrar na branch deploy.
+        target = elos_con if elos_con is not None and name.startswith("elos_") else con
+        target.execute(f"CREATE TABLE {name} AS SELECT *{extra} FROM read_parquet('{path}')")
     log.info("plataforma: %d tabelas do retrato de %s", len(meta["tables"]), meta["exported_at"])
     return meta
 
@@ -154,6 +158,8 @@ def build(out: Path, cache: Path, download: bool, only: set[str], snapshot: Path
     tmp = out / "fomenta.duckdb.tmp"
     tmp.parent.mkdir(parents=True, exist_ok=True)
     tmp.unlink(missing_ok=True)
+    elos_tmp = out / "elos.duckdb.tmp"
+    elos_tmp.unlink(missing_ok=True)
     con = duckdb.connect(str(tmp))
     con.execute(SCHEMA)
     con.execute(
@@ -215,7 +221,12 @@ def build(out: Path, cache: Path, download: bool, only: set[str], snapshot: Path
                round(sum(a.approved_value), 2) AS approved, round(sum(a.released_value), 2) AS released
         FROM funding_award a JOIN funding_award_institution l ON l.award_id = a.id
         GROUP BY ALL ORDER BY 1, 2, 3""")
-    platform = load_snapshot(con, snapshot) if snapshot else None
+    platform = None
+    if snapshot:
+        elos_con = duckdb.connect(str(elos_tmp))
+        platform = load_snapshot(con, snapshot, elos_con)
+        elos_con.execute("CHECKPOINT")
+        elos_con.close()
     con.execute("CHECKPOINT")
 
     shutil.rmtree(out / "parquet", ignore_errors=True)
@@ -228,14 +239,19 @@ def build(out: Path, cache: Path, download: bool, only: set[str], snapshot: Path
         "SELECT id, name, notes, data_as_of, imported_at, summary, source_urls FROM funding_source ORDER BY sort_order"
     ).fetchall()
     con.close()
-    if tmp.stat().st_size > MAX_DB_BYTES:
-        size = tmp.stat().st_size / 1e6
-        tmp.unlink()
-        raise SystemExit(f"Build recusado: fomenta.duckdb com {size:.1f} MB passa do teto de 95 MB "
-                         "(o GitHub recusa arquivos acima de 100 MB na branch deploy). Divida o banco.")
+    pairs = [(tmp, out / "fomenta.duckdb")] + ([(elos_tmp, out / "elos.duckdb")] if elos_tmp.exists() else [])
+    for t, f in pairs:
+        if t.stat().st_size > MAX_DB_BYTES:
+            size = t.stat().st_size / 1e6
+            for t2, _ in pairs:
+                t2.unlink(missing_ok=True)
+            raise SystemExit(f"Build recusado: {f.name} com {size:.1f} MB passa do teto de 95 MB "
+                             "(o GitHub recusa arquivos acima de 100 MB na branch deploy). Divida o banco.")
+    for t, f in pairs:
+        f.unlink(missing_ok=True)
+        t.rename(f)
     final = out / "fomenta.duckdb"
-    final.unlink(missing_ok=True)
-    tmp.rename(final)
+    dbs = [f for _, f in pairs]
 
     static = out / "static" / "v1"
     shutil.rmtree(static, ignore_errors=True)
@@ -250,7 +266,7 @@ def build(out: Path, cache: Path, download: bool, only: set[str], snapshot: Path
     _dump(static / "investimentos" / "financiadores.json", {"items": listing})
 
     files = []
-    for p in sorted([final, *(out / "parquet").glob("*.parquet")]):
+    for p in sorted([*dbs, *(out / "parquet").glob("*.parquet")]):
         files.append({"path": p.relative_to(out).as_posix(), "bytes": p.stat().st_size,
                       "sha256": hashlib.sha256(p.read_bytes()).hexdigest()})
     manifest = {"schema_version": SCHEMA_VERSION, "built_at": imported_at, "sources": manifest_sources,

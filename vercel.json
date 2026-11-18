@@ -11,6 +11,7 @@
       "config": {
         "includeFiles": [
           "build/fomenta.duckdb",
+          "build/elos.duckdb",
           "build/manifest.json"
         ]
       }
