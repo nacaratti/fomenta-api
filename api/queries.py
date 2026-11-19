@@ -19,26 +19,26 @@ DB_PATH = Path(os.environ.get("FOMENTA_DB", Path(__file__).resolve().parents[1] 
 MAX_PER_PAGE = 100
 
 
-SPLIT_DBS = ("elos", "obras", "palavras")  # ver pipeline/build.py: SPLIT_DBS
-
-
 @lru_cache(maxsize=1)
 def _connection() -> duckdb.DuckDBPyConnection:
-    con = duckdb.connect(str(DB_PATH), read_only=True)
-    # Elos e publicações ficam em arquivos ao lado (cada um < 100 MB), anexados aqui; com o
-    # search_path, as tabelas de todos são lidas pelo nome simples, inclusive em JOIN.
-    for name in SPLIT_DBS:
-        f = DB_PATH.with_name(f"{name}.duckdb")
-        if f.exists():
-            con.execute(f"ATTACH '{f.as_posix()}' AS {name} (READ_ONLY)")
+    tabelas = sorted(DB_PATH.with_name("tabelas").glob("*.parquet"))
+    if not tabelas:
+        return duckdb.connect(str(DB_PATH), read_only=True)
+    # Elos e publicações vêm em Parquet ao lado do banco (ver pipeline/build.py: PARQUET_PREFIXES).
+    # Banco em memória com uma view por arquivo e o fomenta.duckdb anexado só para leitura; com o
+    # search_path, todas as tabelas são lidas pelo nome simples, inclusive em JOIN.
+    con = duckdb.connect(":memory:")
+    con.execute(f"ATTACH '{DB_PATH.as_posix()}' AS fomenta (READ_ONLY)")
+    for f in tabelas:
+        con.execute(f"CREATE VIEW {f.stem} AS SELECT * FROM read_parquet('{f.as_posix()}')")
+    con.execute("SET parquet_metadata_cache = true")
     return con
 
 
 @lru_cache(maxsize=1)
 def _search_path() -> str | None:
     names = {r[0] for r in _connection().execute("SELECT database_name FROM duckdb_databases()").fetchall()}
-    attached = [n for n in SPLIT_DBS if n in names]
-    return f"SET search_path = '{','.join(f'{n}.main' for n in [DB_PATH.stem, *attached])}'" if attached else None
+    return "SET search_path = 'memory.main,fomenta.main'" if "fomenta" in names and "memory" in names else None
 
 
 def cursor() -> duckdb.DuckDBPyConnection:

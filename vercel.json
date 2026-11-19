@@ -7,7 +7,7 @@
   },
   "functions": {
     "api/index.py": {
-      "includeFiles": "build/{*.duckdb,manifest.json}"
+      "includeFiles": "build/{fomenta.duckdb,tabelas/*.parquet,manifest.json}"
     }
   },
   "routes": [

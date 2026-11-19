@@ -49,9 +49,10 @@ Documentação interativa em `/v1/docs`.
 fica ligado a ele com o papel `coautor`, com o número de publicações em comum e as mais recentes como
 evidência (links do OpenAlex). Coautores de fora da base entram com nome, ORCID e instituição da
 publicação mais recente. Também voltam os dados que o site corta por espaço no Supabase: 10 temas por
-responsável, coautorias sem teto, até 20 afinidades e todos os pares de laboratórios. O Elos fica em
-`elos.duckdb`, as publicações em `obras.duckdb` e as palavras-chave em `palavras.duckdb`, ao lado do
-`fomenta.duckdb` (cada arquivo precisa ficar abaixo de 100 MB). Os resumos ficam só em
+responsável, coautorias sem teto, até 20 afinidades e todos os pares de laboratórios. O Elos e as
+publicações ficam em `build/tabelas/*.parquet`, ao lado do `fomenta.duckdb`, e a API os lê como views:
+em Parquet ocupam menos da metade do DuckDB, e a função da Vercel tem teto de 225 MB (o build recusa
+dados acima de 190 MB, e cada arquivo precisa ficar abaixo de 100 MB para entrar na branch deploy). Os resumos ficam só em
 `resumos_obras.parquet`, na Release `snapshot-plataforma`.
 
 A busca `q` não diferencia acento nem caixa, e cada palavra precisa aparecer.

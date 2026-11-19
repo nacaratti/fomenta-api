@@ -116,7 +116,7 @@ def client(tmp_path_factory):
     db = tmp_path_factory.mktemp("db") / "fomenta.duckdb"
     con = duckdb.connect(str(db))
     con.execute(SCHEMA)
-    load_snapshot(con, snap)
+    load_snapshot(con, snap, db.parent / "tabelas")  # elos_/oa_ em Parquet, como no build
     con.close()
 
     from fastapi.testclient import TestClient

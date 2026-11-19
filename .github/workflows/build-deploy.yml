@@ -70,7 +70,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           TAG="dados-$(date -u +%Y-%m-%d)"
-          FILES="build/fomenta.duckdb build/elos.duckdb build/obras.duckdb build/palavras.duckdb build/manifest.json build/parquet/*.parquet"
+          FILES="build/fomenta.duckdb build/tabelas/*.parquet build/manifest.json build/parquet/*.parquet"
           if gh release view "$TAG" >/dev/null 2>&1; then
             gh release upload "$TAG" $FILES --clobber
           else
@@ -86,7 +86,7 @@ jobs:
         run: |
           rm -rf /tmp/deploy && mkdir -p /tmp/deploy/build
           cp -r api requirements.txt vercel.json /tmp/deploy/
-          cp -r build/fomenta.duckdb build/elos.duckdb build/obras.duckdb build/palavras.duckdb build/manifest.json build/static /tmp/deploy/build/
+          cp -r build/fomenta.duckdb build/tabelas build/manifest.json build/static /tmp/deploy/build/
           echo '__pycache__/' > /tmp/deploy/.gitignore
           cd /tmp/deploy
           git init -q -b deploy
