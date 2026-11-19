@@ -21,8 +21,11 @@ PAPEIS = {
     "equipe": "equipe provável: da mesma instituição, 3+ publicações com o responsável desde 2019 e ativo desde "
               "2023, ou informada pelo laboratório",
     "coautor": "publicou com o responsável desde 2019 (publicações com até 30 autores); não quer dizer que "
-               "trabalhe no laboratório",
+               "trabalhe no laboratório. `colaborador_estavel` (inferência): publicou com o responsável em 2 anos "
+               "distintos ou mais",
 }
+ESTAVEL = Query(None, description="com papel coautor: só colaboradores estáveis (2+ anos com publicação junto ao "
+                                  "responsável), ou só os demais com false")
 PAPEL = Query(None, pattern="^(responsavel|equipe|coautor)$",
               description="; ".join(f"`{k}`: {v}" for k, v in PAPEIS.items()))
 R_COLS = ("id, nome, orcid, inst_cnpj, publicacoes, citacoes, h_index, desde_2019, ultimo_ano, grandes_areas, "
@@ -51,6 +54,7 @@ def researchers(
     cnpj: str | None = Query(None, max_length=20, description="CNPJ da instituição atual"),
     laboratorio: int | None = Query(None, description="id do laboratório"),
     papel: str | None = PAPEL,
+    estavel: bool | None = ESTAVEL,
     origem: str | None = Query(None, pattern="^(responsavel|equipe|coautor|outro)$",
                                description="como a pessoa entrou na base"),
     tema: str | None = Query(None, max_length=40, description="id do tema (ver /v1/elos/temas)"),
@@ -63,7 +67,7 @@ def researchers(
     if cnpj:
         where.append("inst_cnpj = ?")
         params.append(_digits(cnpj))
-    if laboratorio is not None or papel:
+    if laboratorio is not None or papel or estavel is not None:
         cond, sub = [], []
         if laboratorio is not None:
             cond.append("lab_id = ?")
@@ -71,6 +75,9 @@ def researchers(
         if papel:
             cond.append("papel = ?")
             sub.append(papel)
+        if estavel is not None:
+            cond.append("colaborador_estavel = ?")
+            sub.append(estavel)
         where.append(f"id IN (SELECT researcher_id FROM elos_researcher_lab WHERE {' AND '.join(cond)})")
         params += sub
     if origem:
@@ -82,7 +89,8 @@ def researchers(
     if q:
         _search("busca", q, where, params)
     out = _page("elos_researcher", where, params, R_COLS,
-                "publicacoes DESC NULLS LAST, ultimo_ano DESC NULLS LAST, id", page, per_page, _res)
+                # a base primeiro: os coautores de fora têm perfil completo e passariam à frente
+                "origem = 'coautor', publicacoes DESC NULLS LAST, ultimo_ano DESC NULLS LAST, id", page, per_page, _res)
     return {**out, "papeis": PAPEIS, "nota": ELOS_NOTE}
 
 
@@ -107,7 +115,8 @@ def researcher(researcher_id: str, request: Request, response: Response) -> dict
     if not r:
         raise HTTPException(404, "Pesquisador não encontrado.")
     labs = _all("SELECT rl.lab_id, l.name, l.initials, l.institution_cnpj, rl.papel, rl.responsavel_id, p.nome, "
-                "rl.publicacoes_em_comum, rl.ultimo_ano, rl.obras FROM elos_researcher_lab rl "
+                "rl.publicacoes_em_comum, rl.ultimo_ano, rl.obras, rl.anos_em_comum, rl.colaborador_estavel "
+                "FROM elos_researcher_lab rl "
                 "LEFT JOIN pnipe_laboratory l ON l.id = rl.lab_id "
                 "LEFT JOIN elos_researcher p ON p.id = rl.responsavel_id "
                 f"WHERE rl.researcher_id = ? ORDER BY {PAPEL_ORDEM}, rl.publicacoes_em_comum DESC NULLS LAST, rl.lab_id",
@@ -119,7 +128,8 @@ def researcher(researcher_id: str, request: Request, response: Response) -> dict
     return {**_res(r), "openalex_ids": r[N_R], "nota": ELOS_NOTE, "papeis": PAPEIS,
             "laboratorios": [{"id": x[0], "nome": x[1], "sigla": x[2], "instituicao_cnpj": x[3], "papel": x[4],
                               "responsavel": {"id": x[5], "nome": x[6]} if x[5] else None,
-                              "publicacoes_em_comum": x[7], "ultimo_ano": x[8], "publicacoes": _obras(x[9])}
+                              "publicacoes_em_comum": x[7], "ultimo_ano": x[8], "publicacoes": _obras(x[9]),
+                              "anos_em_comum": x[10], "colaborador_estavel": x[11]}
                              for x in labs],
             "temas": [{"id": x[0], "nome": x[1], "area": x[2], "publicacoes": x[3]} for x in topics],
             "coautores": co["items"], "total_coautores": co["total"],
@@ -162,27 +172,33 @@ def researcher_affinity(researcher_id: str, request: Request, response: Response
 
 @elos.get("/laboratorios/{lab_id}", summary="Pessoas ligadas a um laboratório")
 def lab_team(lab_id: int, request: Request, response: Response,
-             coautores: int = Query(20, ge=0, le=MAX, description="quantos coautores trazer (os mais frequentes)")) -> dict:
+             coautores: int = Query(20, ge=0, le=MAX, description="quantos coautores trazer (os mais frequentes)"),
+             estavel: bool | None = ESTAVEL) -> dict:
     """Responsável e equipe completos, mais os coautores do responsável que mais publicam com ele. A lista
-    inteira, paginada, está em `/v1/elos/pesquisadores?laboratorio={id}&papel=coautor`."""
+    inteira, paginada, está em `/v1/elos/pesquisadores?laboratorio={id}&papel=coautor`. Os colaboradores
+    estáveis (2+ anos com publicação junto ao responsável) vêm primeiro."""
     guard(request, response)
-    cols = f"{_rcols('r')}, rl.papel, rl.publicacoes_em_comum, rl.ultimo_ano, rl.obras, rl.responsavel_id"
+    cols = (f"{_rcols('r')}, rl.papel, rl.publicacoes_em_comum, rl.ultimo_ano, rl.obras, rl.responsavel_id, "
+            "rl.anos_em_comum, rl.colaborador_estavel")
 
     def row(x: tuple) -> dict[str, Any]:
         return {**_res(x[:N_R]), "papel": x[N_R], "publicacoes_com_responsavel": x[N_R + 1],
                 "ultimo_ano_com_responsavel": x[N_R + 2], "publicacoes": _obras(x[N_R + 3]),
-                "responsavel_id": x[N_R + 4]}
+                "responsavel_id": x[N_R + 4], "anos_em_comum": x[N_R + 5], "colaborador_estavel": x[N_R + 6]}
 
     core = _all(f"SELECT {cols} FROM elos_researcher_lab rl JOIN elos_researcher r ON r.id = rl.researcher_id "
                 f"WHERE rl.lab_id = ? AND rl.papel <> 'coautor' ORDER BY {PAPEL_ORDEM}, r.publicacoes DESC NULLS LAST",
                 [lab_id])
-    total_co = _one("SELECT count(*) FROM elos_researcher_lab WHERE lab_id = ? AND papel = 'coautor'", [lab_id])[0]
+    total_co, total_est = _one("SELECT count(*), count(*) FILTER (WHERE colaborador_estavel) FROM elos_researcher_lab "
+                               "WHERE lab_id = ? AND papel = 'coautor'", [lab_id])
+    only = "" if estavel is None else " AND rl.colaborador_estavel = ?"
     co = _all(f"SELECT {cols} FROM elos_researcher_lab rl JOIN elos_researcher r ON r.id = rl.researcher_id "
-              "WHERE rl.lab_id = ? AND rl.papel = 'coautor' "
-              "ORDER BY rl.publicacoes_em_comum DESC, rl.ultimo_ano DESC NULLS LAST, r.id LIMIT ?", [lab_id, coautores])
+              f"WHERE rl.lab_id = ? AND rl.papel = 'coautor'{only} "
+              "ORDER BY rl.colaborador_estavel DESC NULLS LAST, rl.publicacoes_em_comum DESC, rl.ultimo_ano DESC NULLS LAST, "
+              "r.id LIMIT ?", [lab_id, *([] if estavel is None else [estavel]), coautores])
     return {"laboratorio": lab_id, "nota": ELOS_NOTE, "papeis": PAPEIS,
             "pesquisadores": [row(x) for x in core],
-            "coautores": [row(x) for x in co], "total_coautores": total_co,
+            "coautores": [row(x) for x in co], "total_coautores": total_co, "colaboradores_estaveis": total_est,
             "coautores_url": f"/v1/elos/pesquisadores?laboratorio={lab_id}&papel=coautor"}
 
 

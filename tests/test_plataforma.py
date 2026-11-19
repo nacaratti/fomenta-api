@@ -77,10 +77,11 @@ def client(tmp_path_factory):
                              "grandes_areas": ["1"], "atualizado_em": PAST, "origem": "coautor",
                              "instituicao_openalex": "I9", "instituicao_nome": "Universidad de Chile", "instituicao_sigla": None, "instituicao_pais": "CL"}],
         "elos_researcher_lab": [{"researcher_id": "A1", "lab_id": 5, "papel": "responsavel", "confianca": 1.0,
-                                 "responsavel_id": None, "publicacoes_em_comum": None, "ultimo_ano": None, "obras": None},
+                                 "responsavel_id": None, "publicacoes_em_comum": None, "ultimo_ano": None, "obras": None,
+                                 "anos_em_comum": None, "colaborador_estavel": None},
                                 {"researcher_id": "A2", "lab_id": 5, "papel": "coautor", "confianca": 1.0,
                                  "responsavel_id": "A1", "publicacoes_em_comum": 2, "ultimo_ano": 2024,
-                                 "obras": ["W2", "W1"]}],
+                                 "obras": ["W2", "W1"], "anos_em_comum": 2, "colaborador_estavel": True}],
         "elos_researcher_topic": [{"researcher_id": "A1", "topic_id": "T1", "n": 3}],
         "elos_topic": [{"id": "T1", "nome": "Mass Spectrometry", "subarea": "s", "area": "a", "dominio": "d",
                         "field_id": 1, "grande_area": "1"}],
@@ -276,3 +277,12 @@ def test_perfil_para_editais(client):
     e = client.get("/v1/elos/pesquisadores/A1/editais").json()["items"]
     assert e[0]["id"] == 1 and e[0]["posicao_no_edital"] == 1 and e[0]["agencia"]["slug"] == "fapemig"
     assert client.get("/v1/elos/laboratorios/5/editais").json()["items"][0]["id"] == 1
+
+
+def test_colaborador_estavel(client):
+    lab = client.get("/v1/elos/laboratorios/5").json()
+    assert lab["colaboradores_estaveis"] == 1 and lab["coautores"][0]["colaborador_estavel"] is True
+    assert lab["coautores"][0]["anos_em_comum"] == 2
+    assert client.get("/v1/elos/laboratorios/5", params={"estavel": False}).json()["coautores"] == []
+    assert client.get("/v1/elos/pesquisadores", params={"laboratorio": 5, "papel": "coautor", "estavel": True}).json()["total"] == 1
+    assert client.get("/v1/elos/pesquisadores/A2").json()["laboratorios"][0]["colaborador_estavel"] is True

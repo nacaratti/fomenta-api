@@ -49,6 +49,7 @@ Documentação interativa em `/v1/docs`.
 | `GET /v1/elos/pesquisadores/{id}/auxilios` · `/v1/elos/laboratorios/{id}/auxilios` | auxílios em que a pessoa, ou o responsável e a equipe, são os responsáveis |
 | `GET /v1/investimentos/projetos/finep/{contrato}/publicacoes` | publicações da base que citam o contrato FINEP |
 | `GET /v1/editais/{id}/pesquisadores` · `/v1/editais/{id}/laboratorios` | **inferência**: quem tem perfil para o edital, pela semelhança entre o tema do edital e as publicações; FAP estadual só mostra gente do estado; editais de todas as áreas ou só para empresas vêm sem lista, com o motivo |
+| `GET /v1/elos/laboratorios/{id}?estavel=true` · `/v1/elos/pesquisadores?laboratorio=&papel=coautor&estavel=true` | coautores com perfil completo do OpenAlex (publicações, citações, h-index, instituição atual) e `colaborador_estavel` (**inferência**: 2+ anos com publicação junto ao responsável), que vêm primeiro |
 | `GET /v1/elos/pesquisadores/{id}/editais` · `/v1/elos/laboratorios/{id}/editais` | o caminho inverso: editais (abertos, por padrão) em que a pessoa ou o laboratório aparece |
 
 **Elos ampliado.** Na API, todo pesquisador que publicou com o responsável de um laboratório desde 2019
@@ -106,10 +107,14 @@ python tools/openalex_obras.py exportar obras.jsonl.gz      # de volta aqui
 # financiadores e auxílios (~US$ 0,10); no FomentaBR:
 PYTHONPATH=src python <fomenta-api>/tools/openalex_auxilios.py coletar --saida auxilios.jsonl.gz
 python tools/openalex_auxilios.py exportar auxilios.jsonl.gz  # de volta aqui, depois das obras
+# perfil dos coautores de fora (~US$ 0,40) e colaborador estável; depois das obras:
+python tools/coautores_perfis.py ids --saida coautores.txt.gz
+PYTHONPATH=src python <fomenta-api>/tools/coautores_perfis.py coletar coautores.txt.gz --saida coautores.jsonl.gz  # no FomentaBR
+python tools/coautores_perfis.py exportar coautores.jsonl.gz
 # perfil para editais (vetores da OpenAI, ~US$ 0,17 na primeira vez; depois só os novos):
 python tools/perfis_editais.py perfis --saida perfis.jsonl.gz
 PYTHONPATH=src python <fomenta-api>/tools/perfis_editais.py vetores perfis.jsonl.gz --pasta vetores/  # no FomentaBR
-python tools/perfis_editais.py exportar vetores/           # de volta aqui, depois dos auxílios
+python tools/perfis_editais.py exportar vetores/           # de volta aqui, depois dos auxílios e dos coautores
 gh release upload snapshot-plataforma build/snapshot/* --clobber
 ```
 
