@@ -113,8 +113,14 @@ def load_sources(cache: Path, download: bool, only: set[str]) -> list[SourceData
     return out
 
 
+# Bancos à parte por prefixo de tabela: cada arquivo precisa ficar abaixo de 100 MB para entrar
+# na branch deploy. A API anexa todos (`api/queries.py`) e lê as tabelas pelo nome simples.
+# (o primeiro prefixo que casar vale: os mais específicos vêm antes)
+SPLIT_DBS = {"elos_": "elos", "oa_keyword": "palavras", "oa_work_keyword": "palavras", "oa_": "obras"}
+
+
 def load_snapshot(con: duckdb.DuckDBPyConnection, snapshot: Path,
-                  elos_con: duckdb.DuckDBPyConnection | None = None) -> dict[str, Any]:
+                  others: dict[str, duckdb.DuckDBPyConnection] | None = None) -> dict[str, Any]:
     """Tabelas da plataforma (editais, congressos, PNIPE, sinergia, Elos) a partir do retrato
     exportado do Supabase (`tools/export_supabase_snapshot.py`, Release `snapshot-plataforma`)."""
     meta_path = snapshot / "snapshot.json"
@@ -130,13 +136,13 @@ def load_snapshot(con: duckdb.DuckDBPyConnection, snapshot: Path,
         "pnipe_laboratory": "concat_ws(' ', name, initials, about)",
         "pnipe_equipment": "concat_ws(' ', name, initials, brand, model)",
         "elos_researcher": "concat_ws(' ', nome, instituicao_nome, instituicao_sigla)",
+        "oa_work": "titulo",
     }
     for name in meta["tables"]:
         path = (snapshot / f"{name}.parquet").as_posix()
         extra = f", lower(strip_accents({busca[name]})) AS busca" if name in busca else ""
-        # O Elos (centenas de milhares de pessoas e coautorias) vai para um arquivo à parte: cada
-        # arquivo precisa ficar abaixo de 100 MB para entrar na branch deploy.
-        target = elos_con if elos_con is not None and name.startswith("elos_") else con
+        db = next((d for pre, d in SPLIT_DBS.items() if name.startswith(pre)), None)
+        target = (others or {}).get(db, con)
         target.execute(f"CREATE TABLE {name} AS SELECT *{extra} FROM read_parquet('{path}')")
     log.info("plataforma: %d tabelas do retrato de %s", len(meta["tables"]), meta["exported_at"])
     return meta
@@ -158,8 +164,9 @@ def build(out: Path, cache: Path, download: bool, only: set[str], snapshot: Path
     tmp = out / "fomenta.duckdb.tmp"
     tmp.parent.mkdir(parents=True, exist_ok=True)
     tmp.unlink(missing_ok=True)
-    elos_tmp = out / "elos.duckdb.tmp"
-    elos_tmp.unlink(missing_ok=True)
+    split_tmp = {d: out / f"{d}.duckdb.tmp" for d in dict.fromkeys(SPLIT_DBS.values())}
+    for t in split_tmp.values():
+        t.unlink(missing_ok=True)
     con = duckdb.connect(str(tmp))
     con.execute(SCHEMA)
     con.execute(
@@ -223,14 +230,20 @@ def build(out: Path, cache: Path, download: bool, only: set[str], snapshot: Path
         GROUP BY ALL ORDER BY 1, 2, 3""")
     platform = None
     if snapshot:
-        elos_con = duckdb.connect(str(elos_tmp))
-        platform = load_snapshot(con, snapshot, elos_con)
-        elos_con.execute("CHECKPOINT")
-        elos_con.close()
+        others = {d: duckdb.connect(str(t)) for d, t in split_tmp.items()}
+        platform = load_snapshot(con, snapshot, others)
+        for d, c in others.items():
+            empty = not c.execute("SELECT count(*) FROM duckdb_tables()").fetchone()[0]
+            c.execute("CHECKPOINT")
+            c.close()
+            if empty:
+                split_tmp[d].unlink(missing_ok=True)
     con.execute("CHECKPOINT")
 
-    shutil.rmtree(out / "parquet", ignore_errors=True)
-    (out / "parquet").mkdir(parents=True)
+    # Limpa só os arquivos (apagar a pasta falha às vezes no Windows, com OneDrive sincronizando).
+    (out / "parquet").mkdir(parents=True, exist_ok=True)
+    for old in (out / "parquet").glob("*.parquet"):
+        old.unlink()
     for t in ("funding_source", "institution", "funding_award", "funding_disbursement",
               "funding_award_institution", "inst_funder_year"):
         con.execute(f"COPY {t} TO '{(out / 'parquet' / f'{t}.parquet').as_posix()}' (FORMAT parquet, COMPRESSION zstd)")
@@ -239,7 +252,7 @@ def build(out: Path, cache: Path, download: bool, only: set[str], snapshot: Path
         "SELECT id, name, notes, data_as_of, imported_at, summary, source_urls FROM funding_source ORDER BY sort_order"
     ).fetchall()
     con.close()
-    pairs = [(tmp, out / "fomenta.duckdb")] + ([(elos_tmp, out / "elos.duckdb")] if elos_tmp.exists() else [])
+    pairs = [(tmp, out / "fomenta.duckdb")] + [(t, out / f"{d}.duckdb") for d, t in split_tmp.items() if t.exists()]
     for t, f in pairs:
         if t.stat().st_size > MAX_DB_BYTES:
             size = t.stat().st_size / 1e6

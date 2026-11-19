@@ -40,13 +40,19 @@ Documentação interativa em `/v1/docs`.
 | `GET /v1/elos/pesquisadores` · `/pesquisadores/{id}` | pesquisadores; filtros `cnpj`, `laboratorio`, `papel` (responsavel, equipe, coautor), `origem`, `tema`, `q`; perfil com laboratórios, temas e coautores |
 | `GET /v1/elos/pesquisadores/{id}/coautores` · `/afinidades` | todos os coautores, com as publicações em comum; quem pesquisa temas parecidos e nunca publicou junto |
 | `GET /v1/elos/laboratorios/{id}` · `/laboratorios/{id}/coautorias` · `/v1/elos/temas` | responsável, equipe e coautores do responsável; laboratórios que copublicam; temas |
+| `GET /v1/publicacoes` · `/publicacoes/{id}` | publicações desde 2019 dos responsáveis (OpenAlex); filtros `q` (título), `ano`, `financiador`, `ods`, `ordem` (recentes, citadas, impacto); autores da base, financiadores, auxílios, palavras-chave e ODS |
+| `GET /v1/publicacoes/financiadores` · `/financiadores/{id}` | financiadores citados nas publicações; quem cada um apoiou (pesquisadores, laboratórios, nº dos processos) |
+| `GET /v1/elos/pesquisadores/{id}/publicacoes` · `/financiamentos` | publicações e financiadores de uma pessoa |
+| `GET /v1/elos/laboratorios/{id}/publicacoes` · `/financiamentos` | idem, do responsável e da equipe de um laboratório |
 
 **Elos ampliado.** Na API, todo pesquisador que publicou com o responsável de um laboratório desde 2019
 fica ligado a ele com o papel `coautor`, com o número de publicações em comum e as mais recentes como
 evidência (links do OpenAlex). Coautores de fora da base entram com nome, ORCID e instituição da
 publicação mais recente. Também voltam os dados que o site corta por espaço no Supabase: 10 temas por
 responsável, coautorias sem teto, até 20 afinidades e todos os pares de laboratórios. O Elos fica em
-`elos.duckdb`, ao lado do `fomenta.duckdb` (cada arquivo precisa ficar abaixo de 100 MB).
+`elos.duckdb`, as publicações em `obras.duckdb` e as palavras-chave em `palavras.duckdb`, ao lado do
+`fomenta.duckdb` (cada arquivo precisa ficar abaixo de 100 MB). Os resumos ficam só em
+`resumos_obras.parquet`, na Release `snapshot-plataforma`.
 
 A busca `q` não diferencia acento nem caixa, e cada palavra precisa aparecer.
 
@@ -87,6 +93,9 @@ DATABASE_URL=postgresql://... python tools/export_supabase_snapshot.py
 PYTHONPATH=src python <fomenta-api>/tools/elos_ampliado.py calcular --saida elos.pkl.gz
 # de volta aqui (substitui as tabelas elos_* do retrato):
 python tools/elos_ampliado.py exportar elos.pkl.gz
+# publicações completas (usa a chave do OpenAlex, ~US$ 0,17); no FomentaBR:
+PYTHONPATH=src python <fomenta-api>/tools/openalex_obras.py coletar elos.pkl.gz --saida obras.jsonl.gz
+python tools/openalex_obras.py exportar obras.jsonl.gz      # de volta aqui
 gh release upload snapshot-plataforma build/snapshot/* --clobber
 ```
 

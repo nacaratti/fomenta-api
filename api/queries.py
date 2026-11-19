@@ -19,21 +19,26 @@ DB_PATH = Path(os.environ.get("FOMENTA_DB", Path(__file__).resolve().parents[1] 
 MAX_PER_PAGE = 100
 
 
+SPLIT_DBS = ("elos", "obras", "palavras")  # ver pipeline/build.py: SPLIT_DBS
+
+
 @lru_cache(maxsize=1)
 def _connection() -> duckdb.DuckDBPyConnection:
     con = duckdb.connect(str(DB_PATH), read_only=True)
-    # O Elos fica em elos.duckdb, ao lado (cada arquivo < 100 MB). Com o search_path, as tabelas
-    # dos dois bancos são lidas pelo nome simples, inclusive em JOIN entre eles.
-    elos = DB_PATH.with_name("elos.duckdb")
-    if elos.exists():
-        con.execute(f"ATTACH '{elos.as_posix()}' AS elos (READ_ONLY)")
+    # Elos e publicações ficam em arquivos ao lado (cada um < 100 MB), anexados aqui; com o
+    # search_path, as tabelas de todos são lidas pelo nome simples, inclusive em JOIN.
+    for name in SPLIT_DBS:
+        f = DB_PATH.with_name(f"{name}.duckdb")
+        if f.exists():
+            con.execute(f"ATTACH '{f.as_posix()}' AS {name} (READ_ONLY)")
     return con
 
 
 @lru_cache(maxsize=1)
 def _search_path() -> str | None:
     names = {r[0] for r in _connection().execute("SELECT database_name FROM duckdb_databases()").fetchall()}
-    return f"SET search_path = '{DB_PATH.stem}.main,elos.main'" if "elos" in names else None
+    attached = [n for n in SPLIT_DBS if n in names]
+    return f"SET search_path = '{','.join(f'{n}.main' for n in [DB_PATH.stem, *attached])}'" if attached else None
 
 
 def cursor() -> duckdb.DuckDBPyConnection:

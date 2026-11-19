@@ -86,6 +86,25 @@ def client(tmp_path_factory):
                         "field_id": 1, "grande_area": "1"}],
         "elos_edge": [{"a": "A1", "b": "A2", "tipo": "coautoria", "peso": 2.0, "ultimo_ano": 2024, "obras": ["W2", "W1"]}],
         "elos_lab_link": [{"lab_a": 5, "lab_b": 6, "coautorias": 4, "pessoas": ["A1"]}],
+        "oa_work": [{"id": "W1", "doi": None, "titulo": "Espectrometria de massas em proteínas", "ano": 2024,
+                     "data": "2024-03-01", "tipo": "article", "idioma": "pt", "veiculo_id": "S1", "veiculo": "Química Nova",
+                     "veiculo_tipo": "journal", "issn_l": None, "acesso_aberto": True, "oa_url": None, "citacoes": 7,
+                     "fwci": 1.4, "percentil": 0.8, "top10": False, "top1": False, "referencias": 30, "tema": "T1",
+                     "n_autores": 2},
+                    {"id": "W2", "doi": None, "titulo": "Lasers de fibra", "ano": 2025, "data": "2025-01-01",
+                     "tipo": "article", "idioma": "en", "veiculo_id": None, "veiculo": None, "veiculo_tipo": None,
+                     "issn_l": None, "acesso_aberto": False, "oa_url": None, "citacoes": 1, "fwci": None,
+                     "percentil": None, "top10": None, "top1": None, "referencias": 5, "tema": None, "n_autores": 1}],
+        "oa_work_author": [{"work_id": "W1", "researcher_id": "A1", "posicao": "first", "correspondente": True},
+                           {"work_id": "W1", "researcher_id": "A2", "posicao": "last", "correspondente": False},
+                           {"work_id": "W2", "researcher_id": "A1", "posicao": "first", "correspondente": True}],
+        "oa_keyword": [{"id": "mass-spec", "nome": "Mass spectrometry"}],
+        "oa_work_keyword": [{"work_id": "W1", "keyword_id": "mass-spec", "nota": 0.6}],
+        "oa_work_sdg": [{"work_id": "W1", "ods_id": "3", "ods": "Saúde e bem-estar", "nota": 0.5}],
+        "oa_funder": [{"id": "F1", "nome": "Fundação de Amparo à Pesquisa do Estado de São Paulo", "ror": "r"}],
+        "oa_work_funder": [{"work_id": "W1", "funder_id": "F1"}],
+        "oa_award": [{"id": "G1", "processo": "2021/01234-5", "nome": None, "funder_id": "F1", "financiador": "FAPESP"}],
+        "oa_work_award": [{"work_id": "W1", "award_id": "G1"}],
     }
     for name, rows in tables.items():
         _write(snap, name, rows)
@@ -173,3 +192,21 @@ def test_elos_coautor_do_responsavel(client):
     assert todos["total"] == 1 and todos["items"][0]["publicacoes_em_comum"] == 2
     assert client.get("/v1/elos/pesquisadores", params={"q": "chile"}).json()["total"] == 1  # busca pela instituição
     assert client.get("/v1/elos/pesquisadores", params={"papel": "chefe"}).status_code == 422
+
+
+def test_publicacoes_e_financiamento(client):
+    assert client.get("/v1/publicacoes", params={"q": "espectrometria"}).json()["total"] == 1
+    w = client.get("/v1/publicacoes/W1").json()
+    assert {a["id"] for a in w["autores"]} == {"A1", "A2"} and w["auxilios"][0]["processo"] == "2021/01234-5"
+    assert w["palavras_chave"] == ["Mass spectrometry"] and w["ods"] == ["Saúde e bem-estar"]
+    assert client.get("/v1/publicacoes", params={"financiador": "f1"}).json()["total"] == 1
+    assert client.get("/v1/publicacoes", params={"ods": "3"}).json()["total"] == 1
+    assert client.get("/v1/publicacoes/financiadores").json()["items"][0]["publicacoes"] == 1
+    f = client.get("/v1/publicacoes/financiadores/F1").json()
+    assert f["laboratorios"][0]["id"] == 5 and f["pesquisadores"][0]["publicacoes"] == 1
+    assert client.get("/v1/elos/pesquisadores/A1/publicacoes").json()["total"] == 2
+    assert client.get("/v1/elos/pesquisadores/A1/publicacoes", params={"ordem": "citadas"}).json()["items"][0]["id"] == "W1"
+    fin = client.get("/v1/elos/laboratorios/5/financiamentos").json()
+    assert fin["publicacoes"] == 2 and fin["com_financiador"] == 1 and fin["auxilios"][0]["processo"] == "2021/01234-5"
+    assert client.get("/v1/elos/laboratorios/5/publicacoes", params={"ano": 2025}).json()["total"] == 1
+    assert client.get("/v1/publicacoes/W9").status_code == 404

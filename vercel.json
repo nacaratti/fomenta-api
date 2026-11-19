@@ -12,6 +12,8 @@
         "includeFiles": [
           "build/fomenta.duckdb",
           "build/elos.duckdb",
+          "build/obras.duckdb",
+          "build/palavras.duckdb",
           "build/manifest.json"
         ]
       }
