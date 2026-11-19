@@ -103,8 +103,27 @@ def client(tmp_path_factory):
         "oa_work_sdg": [{"work_id": "W1", "ods_id": "3", "ods": "Saúde e bem-estar", "nota": 0.5}],
         "oa_funder": [{"id": "F1", "nome": "Fundação de Amparo à Pesquisa do Estado de São Paulo", "ror": "r"}],
         "oa_work_funder": [{"work_id": "W1", "funder_id": "F1"}],
-        "oa_award": [{"id": "G1", "processo": "2021/01234-5", "nome": None, "funder_id": "F1", "financiador": "FAPESP"}],
-        "oa_work_award": [{"work_id": "W1", "award_id": "G1"}],
+        "oa_award": [{"id": "G1", "processo": "2021/01234-5", "nome": None, "funder_id": "F1", "financiador": "FAPESP"},
+                     {"id": "G4", "processo": "FINEP 01.20.0026.00", "nome": None, "funder_id": "F3",
+                      "financiador": "FINEP"}],
+        "oa_work_award": [{"work_id": "W1", "award_id": "G1"}, {"work_id": "W2", "award_id": "G4"}],
+        "oa_funder_br": [{"id": "F1", "nome": "Fundação de Amparo à Pesquisa do Estado de São Paulo", "ror": "r",
+                          "crossref": None, "auxilios": 10, "publicacoes": 20},
+                         {"id": "F2", "nome": "Fundação de Amparo à Pesquisa do Estado de Minas Gerais", "ror": None,
+                          "crossref": None, "auxilios": 5, "publicacoes": 9}],
+        "oa_funder_agencia": [{"funder_id": "F2", "agencia": "fapemig"}],
+        "oa_auxilio": [
+            {"id": "G2", "processo": "APQ-01234-24", "titulo": "Proteômica de plantas", "funder_id": "F2",
+             "modalidade": "Universal", "tipo": "grant", "inicio": "2024-03-01", "fim": "2099-12-31", "ano": 2024,
+             "valor": 50000.0, "moeda": "BRL", "valor_usd": 9000.0, "fonte": "fapemig_projetos_contratados",
+             "pagina": None, "publicacoes": 0, "researcher_id": "A1", "investigador": "Ana Pérez", "orcid": None,
+             "inst_cnpj": "63025530000104", "afiliacao": "USP"},
+            {"id": "G3", "processo": "2020/00001-0", "titulo": "Óptica integrada", "funder_id": "F1",
+             "modalidade": "Regular", "tipo": "grant", "inicio": "2020-01-01", "fim": "2022-01-01", "ano": 2020,
+             "valor": None, "moeda": "BRL", "valor_usd": None, "fonte": "fapesp_bv", "pagina": "p",
+             "publicacoes": 2, "researcher_id": None, "investigador": None, "orcid": None,
+             "inst_cnpj": "63025530002824", "afiliacao": "USP. EESC"}],
+        "oa_award_finep": [{"award_id": "G4", "contrato": "01.20.0026"}],
     }
     for name, rows in tables.items():
         _write(snap, name, rows)
@@ -116,6 +135,9 @@ def client(tmp_path_factory):
     db = tmp_path_factory.mktemp("db") / "fomenta.duckdb"
     con = duckdb.connect(str(db))
     con.execute(SCHEMA)
+    con.execute("INSERT INTO funding_award (id, source_id, source_key, title, instrument, executor_name, signing_date, "
+                "approved_value, released_value) VALUES (1, 'finep', '01.20.0026.01', 'Laboratório NB3', "
+                "'Não Reembolsável a ICTs', 'UFMG', DATE '2020-06-01', 1000000, 900000)")
     load_snapshot(con, snap, db.parent / "tabelas")  # elos_/oa_ em Parquet, como no build
     con.close()
 
@@ -210,3 +232,28 @@ def test_publicacoes_e_financiamento(client):
     assert fin["publicacoes"] == 2 and fin["com_financiador"] == 1 and fin["auxilios"][0]["processo"] == "2021/01234-5"
     assert client.get("/v1/elos/laboratorios/5/publicacoes", params={"ano": 2025}).json()["total"] == 1
     assert client.get("/v1/publicacoes/W9").status_code == 404
+
+
+def test_auxilios_e_financiadores(client):
+    fs = client.get("/v1/financiadores").json()
+    assert fs["total"] == 2 and {f["id"] for f in fs["items"]} == {"F1", "F2"}
+    assert client.get("/v1/financiadores", params={"com_editais": True}).json()["items"][0]["agencia"]["slug"] == "fapemig"
+    f = client.get("/v1/financiadores/fapemig").json()  # pelo slug da agência
+    assert f["id"] == "F2" and [e["id"] for e in f["editais_abertos"]] == [1]
+    assert f["pesquisadores"][0] == {"id": "A1", "nome": "Ana Pérez", "instituicao_sigla": f["pesquisadores"][0]["instituicao_sigla"],
+                                     "auxilios": 1, "publicacoes": 0}
+    assert f["laboratorios"][0]["id"] == 5 and f["auxilios_por_ano"][0]["valor_brl"] == 50000.0
+    assert client.get("/v1/financiadores/F9").status_code == 404
+    assert client.get("/v1/auxilios").json()["total"] == 2
+    assert [a["id"] for a in client.get("/v1/auxilios", params={"vigentes": True}).json()["items"]] == ["G2"]
+    assert client.get("/v1/auxilios", params={"financiador": "F1"}).json()["items"][0]["pesquisador"] is None
+    assert client.get("/v1/auxilios", params={"q": "proteomica"}).json()["total"] == 1
+    assert client.get("/v1/auxilios", params={"cnpj": "63.025.530/0001-04"}).json()["total"] == 2
+    assert client.get("/v1/elos/pesquisadores/A1/auxilios").json()["items"][0]["processo"] == "APQ-01234-24"
+    assert client.get("/v1/elos/laboratorios/5/auxilios").json()["total"] == 1
+    g4 = client.get("/v1/auxilios/G4").json()  # citado nas publicações, contrato FINEP
+    assert g4["projetos_finep"][0]["contrato"] == "01.20.0026.01" and g4["publicacoes"][0]["id"] == "W2"
+    assert client.get("/v1/auxilios/G2").json()["financiador"]["nome"].endswith("Minas Gerais")
+    assert client.get("/v1/auxilios/G9").status_code == 404
+    p = client.get("/v1/investimentos/projetos/finep/01.20.0026.01/publicacoes").json()
+    assert p["total"] == 1 and p["items"][0]["id"] == "W2"

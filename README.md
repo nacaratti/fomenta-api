@@ -44,6 +44,10 @@ Documentação interativa em `/v1/docs`.
 | `GET /v1/publicacoes/financiadores` · `/financiadores/{id}` | financiadores citados nas publicações; quem cada um apoiou (pesquisadores, laboratórios, nº dos processos) |
 | `GET /v1/elos/pesquisadores/{id}/publicacoes` · `/financiamentos` | publicações e financiadores de uma pessoa |
 | `GET /v1/elos/laboratorios/{id}/publicacoes` · `/financiamentos` | idem, do responsável e da equipe de um laboratório |
+| `GET /v1/financiadores` · `/financiadores/{id ou slug}` | financiadores brasileiros e a agência dos editais de cada um; um financiador com os editais abertos, auxílios por ano e modalidade, pesquisadores e laboratórios apoiados |
+| `GET /v1/auxilios` · `/auxilios/{id}` | auxílios publicados pelas agências (FAPESP, FAPEMIG, CAPES cooperação, FINEP/Funttel) ligados à base; filtros `financiador`, `ano`, `vigentes`, `cnpj`, `q`, `ordem` (recentes, valor); o detalhe traz as publicações da base e o projeto FINEP |
+| `GET /v1/elos/pesquisadores/{id}/auxilios` · `/v1/elos/laboratorios/{id}/auxilios` | auxílios em que a pessoa, ou o responsável e a equipe, são os responsáveis |
+| `GET /v1/investimentos/projetos/finep/{contrato}/publicacoes` | publicações da base que citam o contrato FINEP |
 
 **Elos ampliado.** Na API, todo pesquisador que publicou com o responsável de um laboratório desde 2019
 fica ligado a ele com o papel `coautor`, com o número de publicações em comum e as mais recentes como
@@ -97,6 +101,9 @@ python tools/elos_ampliado.py exportar elos.pkl.gz
 # publicações completas (usa a chave do OpenAlex, ~US$ 0,17); no FomentaBR:
 PYTHONPATH=src python <fomenta-api>/tools/openalex_obras.py coletar elos.pkl.gz --saida obras.jsonl.gz
 python tools/openalex_obras.py exportar obras.jsonl.gz      # de volta aqui
+# financiadores e auxílios (~US$ 0,10); no FomentaBR:
+PYTHONPATH=src python <fomenta-api>/tools/openalex_auxilios.py coletar --saida auxilios.jsonl.gz
+python tools/openalex_auxilios.py exportar auxilios.jsonl.gz  # de volta aqui, depois das obras
 gh release upload snapshot-plataforma build/snapshot/* --clobber
 ```
 
