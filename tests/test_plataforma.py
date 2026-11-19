@@ -124,6 +124,11 @@ def client(tmp_path_factory):
              "publicacoes": 2, "researcher_id": None, "investigador": None, "orcid": None,
              "inst_cnpj": "63025530002824", "afiliacao": "USP. EESC"}],
         "oa_award_finep": [{"award_id": "G4", "contrato": "01.20.0026"}],
+        "edital_perfil": [{"call_id": 1, "situacao": "tematico"}, {"call_id": 2, "situacao": "todas_as_areas"}],
+        "edital_pesquisador": [{"call_id": 1, "researcher_id": "A1", "posicao": 1, "nota": 0.31, "semelhanca": 0.6,
+                                "auxilios_da_agencia": 1, "publicacoes_da_agencia": 0}],
+        "edital_laboratorio": [{"call_id": 1, "lab_id": 5, "posicao": 1, "nota": 0.3, "semelhanca_laboratorio": 0.55,
+                                "semelhanca_equipe": 0.6}],
     }
     for name, rows in tables.items():
         _write(snap, name, rows)
@@ -257,3 +262,17 @@ def test_auxilios_e_financiadores(client):
     assert client.get("/v1/auxilios/G9").status_code == 404
     p = client.get("/v1/investimentos/projetos/finep/01.20.0026.01/publicacoes").json()
     assert p["total"] == 1 and p["items"][0]["id"] == "W2"
+
+
+def test_perfil_para_editais(client):
+    p = client.get("/v1/editais/1/pesquisadores").json()
+    assert p["perfil"] == "tematico" and p["motivo_sem_lista"] is None
+    assert p["items"][0]["id"] == "A1" and p["items"][0]["laboratorios"][0]["id"] == 5
+    assert p["items"][0]["auxilios_da_agencia"] == 1
+    g = client.get("/v1/editais/2/pesquisadores").json()
+    assert g["items"] == [] and g["perfil"] == "todas_as_areas" and "todas as áreas" in g["motivo_sem_lista"]
+    assert client.get("/v1/editais/1/laboratorios").json()["items"][0]["id"] == 5
+    assert client.get("/v1/editais/99/pesquisadores").status_code == 404
+    e = client.get("/v1/elos/pesquisadores/A1/editais").json()["items"]
+    assert e[0]["id"] == 1 and e[0]["posicao_no_edital"] == 1 and e[0]["agencia"]["slug"] == "fapemig"
+    assert client.get("/v1/elos/laboratorios/5/editais").json()["items"][0]["id"] == 1

@@ -48,6 +48,8 @@ Documentação interativa em `/v1/docs`.
 | `GET /v1/auxilios` · `/auxilios/{id}` | auxílios publicados pelas agências (FAPESP, FAPEMIG, CAPES cooperação, FINEP/Funttel) ligados à base; filtros `financiador`, `ano`, `vigentes`, `cnpj`, `q`, `ordem` (recentes, valor); o detalhe traz as publicações da base e o projeto FINEP |
 | `GET /v1/elos/pesquisadores/{id}/auxilios` · `/v1/elos/laboratorios/{id}/auxilios` | auxílios em que a pessoa, ou o responsável e a equipe, são os responsáveis |
 | `GET /v1/investimentos/projetos/finep/{contrato}/publicacoes` | publicações da base que citam o contrato FINEP |
+| `GET /v1/editais/{id}/pesquisadores` · `/v1/editais/{id}/laboratorios` | **inferência**: quem tem perfil para o edital, pela semelhança entre o tema do edital e as publicações; FAP estadual só mostra gente do estado; editais de todas as áreas ou só para empresas vêm sem lista, com o motivo |
+| `GET /v1/elos/pesquisadores/{id}/editais` · `/v1/elos/laboratorios/{id}/editais` | o caminho inverso: editais (abertos, por padrão) em que a pessoa ou o laboratório aparece |
 
 **Elos ampliado.** Na API, todo pesquisador que publicou com o responsável de um laboratório desde 2019
 fica ligado a ele com o papel `coautor`, com o número de publicações em comum e as mais recentes como
@@ -104,6 +106,10 @@ python tools/openalex_obras.py exportar obras.jsonl.gz      # de volta aqui
 # financiadores e auxílios (~US$ 0,10); no FomentaBR:
 PYTHONPATH=src python <fomenta-api>/tools/openalex_auxilios.py coletar --saida auxilios.jsonl.gz
 python tools/openalex_auxilios.py exportar auxilios.jsonl.gz  # de volta aqui, depois das obras
+# perfil para editais (vetores da OpenAI, ~US$ 0,17 na primeira vez; depois só os novos):
+python tools/perfis_editais.py perfis --saida perfis.jsonl.gz
+PYTHONPATH=src python <fomenta-api>/tools/perfis_editais.py vetores perfis.jsonl.gz --pasta vetores/  # no FomentaBR
+python tools/perfis_editais.py exportar vetores/           # de volta aqui, depois dos auxílios
 gh release upload snapshot-plataforma build/snapshot/* --clobber
 ```
 
