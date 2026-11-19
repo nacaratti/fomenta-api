@@ -1,28 +1,15 @@
 {
+  "$schema": "https://openapi.vercel.sh/vercel.json",
   "git": {
     "deploymentEnabled": {
       "main": false
     }
   },
-  "builds": [
-    {
-      "src": "api/index.py",
-      "use": "@vercel/python",
-      "config": {
-        "includeFiles": [
-          "build/fomenta.duckdb",
-          "build/elos.duckdb",
-          "build/obras.duckdb",
-          "build/palavras.duckdb",
-          "build/manifest.json"
-        ]
-      }
-    },
-    {
-      "src": "build/static/**",
-      "use": "@vercel/static"
+  "functions": {
+    "api/index.py": {
+      "includeFiles": "build/{*.duckdb,manifest.json}"
     }
-  ],
+  },
   "routes": [
     {
       "src": "/v1/investimentos/financiadores/?",
@@ -53,7 +40,7 @@
     },
     {
       "src": "/(.*)",
-      "dest": "/api/index.py"
+      "dest": "/api/index"
     }
   ]
 }
