@@ -125,6 +125,16 @@ def client(tmp_path_factory):
              "publicacoes": 2, "researcher_id": None, "investigador": None, "orcid": None,
              "inst_cnpj": "63025530002824", "afiliacao": "USP. EESC"}],
         "oa_award_finep": [{"award_id": "G4", "contrato": "01.20.0026"}],
+        "elos_institution": [
+            {"cnpj": "63025530000104", "openalex_id": "I1", "nome_openalex": "Universidade de São Paulo",
+             "ror": "https://ror.org/036rp1748", "confianca": 1.0, "origem": "auto"},
+            {"cnpj": "63025530000104", "openalex_id": "I2", "nome_openalex": "Hospital Universitário da USP",
+             "ror": "https://ror.org/0406jsq08", "confianca": 0.7, "origem": "lineage"}],
+        "oa_institution_br": [
+            {"id": "I1", "ror": "https://ror.org/036rp1748", "nome": "Universidade de São Paulo", "siglas": ["USP"],
+             "tipo": "education", "cidade": "São Paulo", "uf": "SP", "publicacoes": 100, "mae": None},
+            {"id": "I2", "ror": "https://ror.org/0406jsq08", "nome": "Hospital Universitário da USP", "siglas": [],
+             "tipo": "healthcare", "cidade": "São Paulo", "uf": "SP", "publicacoes": 5, "mae": "I1"}],
         "edital_perfil": [{"call_id": 1, "situacao": "tematico"}, {"call_id": 2, "situacao": "todas_as_areas"}],
         "edital_pesquisador": [{"call_id": 1, "researcher_id": "A1", "posicao": 1, "nota": 0.31, "semelhanca": 0.6,
                                 "auxilios_da_agencia": 1, "publicacoes_da_agencia": 0}],
@@ -286,3 +296,14 @@ def test_colaborador_estavel(client):
     assert client.get("/v1/elos/laboratorios/5", params={"estavel": False}).json()["coautores"] == []
     assert client.get("/v1/elos/pesquisadores", params={"laboratorio": 5, "papel": "coautor", "estavel": True}).json()["total"] == 1
     assert client.get("/v1/elos/pesquisadores/A2").json()["laboratorios"][0]["colaborador_estavel"] is True
+
+
+def test_instituicoes_por_ror(client):
+    i = client.get("/v1/instituicoes/ror/0406jsq08").json()
+    assert i["openalex"] == "I2" and i["mae"]["openalex"] == "I1" and i["pnipe"][0]["origem"] == "lineage"
+    assert client.get("/v1/instituicoes/ror/I1").json()["unidades"][0]["openalex"] == "I2"
+    assert client.get("/v1/instituicoes/ror/zzz").status_code == 404
+    d = client.get("/v1/instituicoes/036rp1748").json()  # pelo ROR
+    assert d["cnpj"] == "63025530000104" and [x["origem"] for x in d["openalex"]] == ["auto", "lineage"]
+    assert d["elos"]["pesquisadores_da_base"] >= 1
+    assert client.get("/v1/instituicoes/I2/investimentos").status_code in (200, 404)

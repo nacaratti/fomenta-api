@@ -257,18 +257,62 @@ def list_institutions(
                  page, per_page, _inst)
 
 
+def cnpj_or_ror(v: str) -> str:
+    """CNPJ (com ou sem pontuação), ROR (`036rp1748` ou a URL) ou id do OpenAlex (`I17974374`) -> CNPJ do PNIPE.
+    Sem par conhecido devolve o que veio, só com os números (a rota responde 404)."""
+    v = v.strip()
+    if any(ch.isalpha() for ch in v):
+        key = v.rstrip("/").rsplit("/", 1)[-1]
+        r = _one("SELECT arg_max(cnpj, confianca) FROM elos_institution WHERE ror = ? OR openalex_id = ?",
+                 [f"https://ror.org/{key.lower()}", key.upper()])
+        if r and r[0]:
+            return r[0]
+    return _digits(v)
+
+
+@infra.get("/instituicoes/ror/{ror}", summary="Instituição pelo ROR ou pelo id do OpenAlex")
+def institution_by_ror(ror: str, request: Request, response: Response) -> dict:
+    """ROR (`036rp1748`) ou id do OpenAlex (`I17974374`): a instituição no OpenAlex, a instituição-mãe e o
+    CNPJ do PNIPE quando há casamento (`origem`: auto, manual, nome_openalex ou lineage, que herda da mãe)."""
+    guard(request, response)
+    key = ror.strip().rstrip("/").rsplit("/", 1)[-1]
+    i = _one("SELECT i.id, i.ror, i.nome, i.siglas, i.tipo, i.cidade, i.uf, i.publicacoes, i.mae, m.nome "
+             "FROM oa_institution_br i LEFT JOIN oa_institution_br m ON m.id = i.mae "
+             "WHERE i.ror = ? OR i.id = ?", [f"https://ror.org/{key.lower()}", key.upper()])
+    if not i:
+        raise HTTPException(404, "Instituição brasileira não encontrada no OpenAlex.")
+    pares = _all("SELECT e.cnpj, p.initials, p.social_reason, e.confianca, e.origem FROM elos_institution e "
+                 "LEFT JOIN pnipe_institution p ON p.cnpj = e.cnpj WHERE e.openalex_id = ? ORDER BY e.confianca DESC",
+                 [i[0]])
+    unidades = _all("SELECT id, ror, nome, tipo FROM oa_institution_br WHERE mae = ? ORDER BY publicacoes DESC NULLS LAST "
+                    "LIMIT 50", [i[0]])
+    return {"openalex": i[0], "ror": i[1], "nome": i[2], "siglas": i[3], "tipo": i[4], "cidade": i[5], "uf": i[6],
+            "publicacoes": i[7], "mae": {"openalex": i[8], "nome": i[9]} if i[8] else None,
+            "pnipe": [{"cnpj": x[0], "sigla": x[1], "nome": x[2], "confianca": x[3], "origem": x[4]} for x in pares],
+            "unidades": [{"openalex": x[0], "ror": x[1], "nome": x[2], "tipo": x[3]} for x in unidades]}
+
+
 @infra.get("/instituicoes/{cnpj}", summary="Detalhe de uma instituição")
 def institution(cnpj: str, request: Request, response: Response) -> dict:
-    """CNPJ com os 14 números. Os investimentos recebidos estão em `/v1/instituicoes/{cnpj}/investimentos`."""
+    """CNPJ com os 14 números, ROR ou id do OpenAlex. Os investimentos recebidos estão em
+    `/v1/instituicoes/{cnpj}/investimentos`."""
     guard(request, response)
-    d = _digits(cnpj)
+    d = cnpj_or_ror(cnpj)
     r = _one(f"SELECT {INST_COLS}, zip_code, street, number, complement, district, phone_number, situation, "
              "embrapii_units FROM pnipe_institution WHERE cnpj = ?", [d])
     if not r:
         raise HTTPException(404, "Instituição não encontrada no cadastro do PNIPE.")
+    oa = _all("SELECT e.openalex_id, e.ror, e.nome_openalex, e.confianca, e.origem FROM elos_institution e "
+              "WHERE e.cnpj = ? ORDER BY e.origem = 'lineage', e.confianca DESC, e.openalex_id", [d])
+    pessoas = _one("SELECT count(*) FILTER (WHERE origem <> 'coautor'), count(*) FILTER (WHERE origem = 'coautor') "
+                   "FROM elos_researcher WHERE inst_cnpj = ?", [d])
     return {**_inst(r), "endereco": {"cep": r[9], "logradouro": r[10], "numero": r[11], "complemento": r[12],
                                      "bairro": r[13]},
             "telefone": r[14], "situacao": r[15], "unidades_embrapii": r[16],
+            # casamento com o OpenAlex: a instituição e as unidades que herdam o CNPJ pela hierarquia (lineage)
+            "openalex": [{"id": x[0], "ror": x[1], "nome": x[2], "confianca": x[3], "origem": x[4]} for x in oa],
+            "elos": {"pesquisadores_da_base": pessoas[0], "coautores": pessoas[1],
+                     "url": f"/v1/elos/pesquisadores?cnpj={d}"},
             "laboratorios_url": f"/v1/laboratorios?cnpj={d}", "investimentos_url": f"/v1/instituicoes/{d}/investimentos"}
 
 

@@ -18,6 +18,7 @@ from fastapi.responses import RedirectResponse  # noqa: E402
 
 from api import queries  # noqa: E402
 from api.guard import guard as _guard  # noqa: E402
+from api.plataforma import cnpj_or_ror  # noqa: E402
 from api.elos import elos as elos_router  # noqa: E402
 from api.obras import ROUTERS as OBRAS  # noqa: E402
 from api.auxilios import ROUTERS as AUXILIOS  # noqa: E402
@@ -84,7 +85,7 @@ def awards(
     ano: int | None = Query(None, ge=1990, le=2100, description="ano de assinatura/concessão"),
     uf: str | None = Query(None, min_length=2, max_length=2, description="sigla da UF"),
     instrumento: str | None = Query(None, max_length=200, description="rótulo exato, como em /financiadores/{id}"),
-    cnpj: str | None = Query(None, max_length=20, description="CNPJ de uma instituição do PNIPE"),
+    cnpj: str | None = Query(None, max_length=40, description="CNPJ de uma instituição do PNIPE, ROR ou id do OpenAlex"),
     q: str | None = Query(None, min_length=3, max_length=80, description="busca no título e nos nomes"),
     page: int = Query(1, ge=1, le=2000),
     per_page: int = Query(25, ge=1, le=queries.MAX_PER_PAGE),
@@ -93,14 +94,16 @@ def awards(
     (modalidades e origem do recurso no CNPq; custeio/capital e programa de pós na CAPES)."""
     _guard(request, response)
     return queries.list_awards(funder=financiador.lower() if financiador else None, year=ano, uf=uf,
-                               instrument=instrumento, cnpj=cnpj, q=q, page=page, per_page=per_page)
+                               instrument=instrumento, cnpj=cnpj_or_ror(cnpj) if cnpj and any(ch.isalpha() for ch in cnpj) else cnpj,
+                               q=q, page=page, per_page=per_page)
 
 
 @instituicoes.get("/{cnpj}/investimentos", summary="Investimentos recebidos por uma instituição")
 def institution(cnpj: str, request: Request, response: Response) -> dict:
-    """Por financiador e por ano, para uma instituição do cadastro do PNIPE (CNPJ com os 14 números)."""
+    """Por financiador e por ano, para uma instituição do cadastro do PNIPE (CNPJ com os 14 números, ROR ou
+    id do OpenAlex)."""
     _guard(request, response)
-    data = queries.institution_investments(cnpj)
+    data = queries.institution_investments(cnpj_or_ror(cnpj) if any(ch.isalpha() for ch in cnpj) else cnpj)
     if data is None:
         raise HTTPException(404, "Instituição não encontrada no cadastro do PNIPE.")
     return data

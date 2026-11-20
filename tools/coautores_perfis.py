@@ -105,15 +105,16 @@ def exportar(entrada: Path) -> None:
                  CASE WHEN p.rid IS NULL THEN r.citacoes ELSE p.citacoes END AS citacoes,
                  CASE WHEN p.rid IS NULL THEN r.h_index ELSE p.h_index END AS h_index,
                  CASE WHEN p.rid IS NULL THEN r.desde_2019 ELSE p.desde_2019 END AS desde_2019,
-                 CASE WHEN p.inst_oa IS NULL THEN r.inst_cnpj ELSE coalesce(io.cnpj, ir.cnpj) END AS inst_cnpj,
+                 -- pela instituição atual; sem ela, pela da publicação em comum (o casamento pode ter crescido)
+                 coalesce(io.cnpj, ir.cnpj, CASE WHEN p.inst_oa IS NULL THEN r.inst_cnpj END) AS inst_cnpj,
                  coalesce(p.inst_oa, r.instituicao_openalex) AS instituicao_openalex,
                  coalesce(p.inst_nome, r.instituicao_nome) AS instituicao_nome,
-                 CASE WHEN p.inst_oa IS NULL THEN r.instituicao_sigla ELSE pi.initials END AS instituicao_sigla,
+                 coalesce(pi.initials, CASE WHEN p.inst_oa IS NULL THEN r.instituicao_sigla END) AS instituicao_sigla,
                  coalesce(p.inst_pais, r.instituicao_pais) AS instituicao_pais),
                p.rid IS NOT NULL AS _perfil
         FROM '{s}/elos_researcher.parquet' r
         LEFT JOIN p ON p.rid = r.id AND p.k = 1
-        LEFT JOIN io ON io.openalex_id = p.inst_oa
+        LEFT JOIN io ON io.openalex_id = coalesce(p.inst_oa, r.instituicao_openalex)
         LEFT JOIN ir ON ir.ror = p.inst_ror AND io.cnpj IS NULL
         LEFT JOIN '{s}/pnipe_institution.parquet' pi ON pi.cnpj = coalesce(io.cnpj, ir.cnpj)""")
     n_total = con.execute("SELECT count(*) FROM r").fetchone()[0]

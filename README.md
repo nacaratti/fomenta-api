@@ -44,6 +44,7 @@ Documentação interativa em `/v1/docs`.
 | `GET /v1/publicacoes/financiadores` · `/financiadores/{id}` | financiadores citados nas publicações; quem cada um apoiou (pesquisadores, laboratórios, nº dos processos) |
 | `GET /v1/elos/pesquisadores/{id}/publicacoes` · `/financiamentos` | publicações e financiadores de uma pessoa |
 | `GET /v1/elos/laboratorios/{id}/publicacoes` · `/financiamentos` | idem, do responsável e da equipe de um laboratório |
+| `GET /v1/instituicoes/ror/{ror ou id do OpenAlex}` | a instituição no OpenAlex, a instituição-mãe, as unidades e o CNPJ do PNIPE; `/v1/instituicoes/{cnpj}` e os filtros `cnpj` de investimentos também aceitam ROR |
 | `GET /v1/financiadores` · `/financiadores/{id ou slug}` | financiadores brasileiros e a agência dos editais de cada um; um financiador com os editais abertos, auxílios por ano e modalidade, pesquisadores e laboratórios apoiados |
 | `GET /v1/auxilios` · `/auxilios/{id}` | auxílios publicados pelas agências (FAPESP, FAPEMIG, CAPES cooperação, FINEP/Funttel) ligados à base; filtros `financiador`, `ano`, `vigentes`, `cnpj`, `q`, `ordem` (recentes, valor); o detalhe traz as publicações da base e o projeto FINEP |
 | `GET /v1/elos/pesquisadores/{id}/auxilios` · `/v1/elos/laboratorios/{id}/auxilios` | auxílios em que a pessoa, ou o responsável e a equipe, são os responsáveis |
@@ -101,6 +102,9 @@ DATABASE_URL=postgresql://... python tools/export_supabase_snapshot.py
 PYTHONPATH=src python <fomenta-api>/tools/elos_ampliado.py calcular --saida elos.pkl.gz
 # de volta aqui (substitui as tabelas elos_* do retrato):
 python tools/elos_ampliado.py exportar elos.pkl.gz
+# instituições por ROR e lineage (~US$ 0,001), logo depois do retrato; no FomentaBR, depois aqui:
+PYTHONPATH=src python <fomenta-api>/tools/instituicoes_ror.py coletar --saida instituicoes.jsonl.gz
+python tools/instituicoes_ror.py exportar instituicoes.jsonl.gz
 # publicações completas (usa a chave do OpenAlex, ~US$ 0,17); no FomentaBR:
 PYTHONPATH=src python <fomenta-api>/tools/openalex_obras.py coletar elos.pkl.gz --saida obras.jsonl.gz
 python tools/openalex_obras.py exportar obras.jsonl.gz      # de volta aqui
