@@ -37,7 +37,7 @@ log = logging.getLogger("build")
 ROOT = Path(__file__).resolve().parents[1]
 SCHEMA_VERSION = 1
 # Mínimo de awards por fonte para o build ser aceito (protege contra planilha vazia/formato novo).
-MIN_AWARDS = {"finep": 10_000, "capes": 5_000, "cnpq": 1_000}
+MIN_AWARDS = {"finep": 10_000, "capes": 30_000, "cnpq": 40_000}
 # O banco vai num commit da branch `deploy`: o GitHub recusa arquivo acima de 100 MB.
 MAX_DB_BYTES = 95 * 1024 * 1024
 MAX_FUNCTION_DATA_BYTES = 190 * 1024 * 1024
@@ -119,12 +119,19 @@ def load_sources(cache: Path, download: bool, only: set[str]) -> list[SourceData
 # Parquet zstd ocupam menos da metade do DuckDB, e a função da Vercel tem teto de 225 MB. A API
 # as lê como views (`api/queries.py`), pelo nome simples, inclusive em JOIN.
 PARQUET_PREFIXES = ("elos_", "oa_")
+# Outras tabelas em Parquet, com a coluna pela qual a API as busca. Os grafos da sinergia têm
+# listas grandes (nós, arestas, comunidades): ~28 MB no banco contra ~6,5 MB em Parquet. Gravados
+# em ordem da chave e em blocos pequenos, a leitura de um grafo pula os blocos dos outros (um
+# grafo típico em ~6 ms, o maior em ~18 ms; no banco, ~2 ms).
+PARQUET_TABLES = {"synergy_graph": "key"}
+PARQUET_SORTED_ROW_GROUP = 512
 
 
 def load_snapshot(con: duckdb.DuckDBPyConnection, snapshot: Path, tabelas: Path | None = None) -> dict[str, Any]:
     """Tabelas da plataforma (editais, congressos, PNIPE, sinergia, Elos) a partir do retrato
     exportado do Supabase (`tools/export_supabase_snapshot.py`, Release `snapshot-plataforma`).
-    Com `tabelas`, as de `PARQUET_PREFIXES` são gravadas lá em Parquet em vez de no banco."""
+    Com `tabelas`, as de `PARQUET_PREFIXES` e `PARQUET_TABLES` são gravadas lá em Parquet em vez de
+    no banco."""
     meta_path = snapshot / "snapshot.json"
     if not meta_path.exists():
         raise SystemExit(f"Retrato da plataforma não encontrado em {snapshot} (snapshot.json)")
@@ -148,7 +155,11 @@ def load_snapshot(con: duckdb.DuckDBPyConnection, snapshot: Path, tabelas: Path 
         path = (snapshot / f"{name}.parquet").as_posix()
         extra = f", lower(strip_accents({busca[name]})) AS busca" if name in busca else ""
         select = f"SELECT *{extra} FROM read_parquet('{path}')"
-        if tabelas and name.startswith(PARQUET_PREFIXES):
+        if tabelas and name in PARQUET_TABLES:
+            con.execute(f"COPY ({select} ORDER BY {PARQUET_TABLES[name]}) TO "
+                        f"'{(tabelas / f'{name}.parquet').as_posix()}' (FORMAT parquet, COMPRESSION zstd, "
+                        f"COMPRESSION_LEVEL 9, ROW_GROUP_SIZE {PARQUET_SORTED_ROW_GROUP})")
+        elif tabelas and name.startswith(PARQUET_PREFIXES):
             con.execute(f"COPY ({select}) TO '{(tabelas / f'{name}.parquet').as_posix()}' "
                         "(FORMAT parquet, COMPRESSION zstd, COMPRESSION_LEVEL 9)")
         else:
