@@ -1,7 +1,8 @@
 """CAPES: custeio e capital do PROAP e do PROEX (portal de dados abertos, CKAN).
 
-O portal publica um CSV por janela de anos, com sobreposição (o arquivo
-2023–2025 e o 2024–2025 são idênticos): lemos todos e deduplicamos por
+Três conjuntos: 2012–2016, 2017–2021 e 2022 em diante. O de 2022 publica um CSV
+por janela de anos, com sobreposição (o arquivo 2023–2025 e o 2024–2025 são
+idênticos): lemos todos e deduplicamos por
 (ano, programa, IES, PPG, natureza da despesa). Um award por
 (ano, programa, IES, PPG), com o valor concedido; PROAP e PROEX são repasses
 diretos às IES, então o concedido conta como pago no ano. O CSV não traz CNPJ:
@@ -23,18 +24,21 @@ from pipeline.common import SourceData
 
 log = logging.getLogger(__name__)
 
-DATASET = "2022-a-2025-custeio-e-capital-dos-programas-de-fomento-proap-e-proex-da-dpb"
+DATASETS = (
+    "2022-a-2025-custeio-e-capital-dos-programas-de-fomento-proap-e-proex-da-dpb",
+    "2017-a-2021-custeio-e-capital-dos-programas-de-fomento-da-diretoria-de-programas-e-bolsas-no-pais",
+    "2012-a-2016-custeio-e-capital-dos-programas-de-fomento-da-diretoria-de-programas-e-bolsas-no-pais",
+)
 API = "https://dadosabertos.capes.gov.br/api/3/action/package_show"
 META = {
     "id": "capes",
     "name": "Coordenação de Aperfeiçoamento de Pessoal de Nível Superior (CAPES)",
-    "urls": [f"https://dadosabertos.capes.gov.br/dataset/{DATASET}",
+    "urls": [*(f"https://dadosabertos.capes.gov.br/dataset/{d}" for d in DATASETS),
              "https://metadados.capes.gov.br/index.php/catalog/303"],
     "notes": (
         "Valores nominais, não corrigidos pela inflação. Só os programas PROAP e PROEX (custeio e "
-        "capital repassados às instituições para a pós-graduação), 2022 em diante: as bolsas da "
-        "CAPES aparecem no portal apenas em quantidade, sem valor. O valor concedido é contado "
-        "como pago no ano da concessão."
+        "capital repassados às instituições para a pós-graduação), 2012 em diante; as bolsas da "
+        "CAPES ainda não entram. O valor concedido é contado como pago no ano da concessão."
     ),
     "sort_order": 1,
     "link_mode": "name",
@@ -74,28 +78,29 @@ def _read(path: Path) -> list[dict[str, str]]:
 
 def download(dest: Path) -> None:
     dest.mkdir(parents=True, exist_ok=True)
+    fetched, modified = {}, []
     with httpx.Client(timeout=120, follow_redirects=True, headers={"User-Agent": "Mozilla/5.0"}) as c:
-        r = c.get(API, params={"id": DATASET})
-        r.raise_for_status()
-        result = r.json()["result"]
-        fetched = {}
-        for res in result["resources"]:
-            if (res.get("format") or "").upper() != "CSV":
-                continue
-            name = res["url"].rsplit("/", 1)[-1]
-            log.info("CAPES: baixando %s", name)
-            data = c.get(res["url"])
-            data.raise_for_status()
-            fetched[name] = data.content
-    if not fetched:
-        raise RuntimeError("CAPES: o conjunto não listou nenhum CSV")
+        for dataset in DATASETS:
+            r = c.get(API, params={"id": dataset})
+            r.raise_for_status()
+            result = r.json()["result"]
+            modified.append(result["metadata_modified"][:10])
+            csvs = [res for res in result["resources"] if (res.get("format") or "").upper() == "CSV"]
+            if not csvs:
+                raise RuntimeError(f"CAPES: o conjunto {dataset} não listou nenhum CSV")
+            for res in csvs:
+                name = res["url"].rsplit("/", 1)[-1]
+                log.info("CAPES: baixando %s", name)
+                data = c.get(res["url"])
+                data.raise_for_status()
+                fetched[name] = data.content
     # Só troca os arquivos depois de baixar todos (o conjunto é a união das janelas de anos).
     for old in dest.glob("*.csv"):
         old.unlink()
     for name, content in fetched.items():
         (dest / name).write_bytes(content)
-    # Última atualização do conjunto no portal = posição dos dados.
-    (dest / POSITION_FILE).write_text(result["metadata_modified"][:10], encoding="utf-8")
+    # Última atualização dos conjuntos no portal = posição dos dados.
+    (dest / POSITION_FILE).write_text(max(modified), encoding="utf-8")
 
 
 def parse(directory: Path) -> SourceData:

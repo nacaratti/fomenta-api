@@ -63,7 +63,9 @@ publicação mais recente. Também voltam os dados que o site corta por espaço 
 responsável, coautorias sem teto, até 20 afinidades e todos os pares de laboratórios. O Elos e as
 publicações ficam em `build/tabelas/*.parquet`, ao lado do `fomenta.duckdb`, e a API os lê como views:
 em Parquet ocupam menos da metade do DuckDB, e a função da Vercel tem teto de 225 MB (o build recusa
-dados acima de 190 MB, e cada arquivo precisa ficar abaixo de 100 MB para entrar na branch deploy). Os resumos ficam só em
+dados acima de 190 MB, e cada arquivo precisa ficar abaixo de 100 MB para entrar na branch deploy). Os grafos
+da sinergia (`synergy_graph`) também vão para lá, ordenados pela chave (~28 MB no banco contra 6,5 MB em
+Parquet); os investimentos ficam no banco, que responde mais rápido às consultas mais usadas. Os resumos ficam só em
 `resumos_obras.parquet`, na Release `snapshot-plataforma`.
 
 A busca `q` não diferencia acento nem caixa, e cada palavra precisa aparecer.
@@ -82,18 +84,26 @@ Somente GET, CORS aberto, `Cache-Control` de 1 dia na CDN (o dado só muda a cad
 | Fonte | Como entra | Atualização |
 |---|---|---|
 | FINEP | `Contratacao.xlsx` e `Liberacao.xlsx` da Central de Downloads (URL fixa) | automática, toda segunda |
-| CAPES | CSVs de custeio e capital PROAP/PROEX, listados pela API CKAN do portal | automática |
-| CNPq | export anual do Painel de Fomento, reduzido para `data/raw/cnpq/<ano>.csv` | manual, por ano |
+| CAPES | CSVs de custeio e capital PROAP/PROEX (2012–2016, 2017–2021 e 2022 em diante), listados pela API CKAN do portal | automática |
+| CNPq | extrato do workbook do Painel de Fomento (Tableau Public), 2005 em diante, reduzido para `data/raw/cnpq/<ano>.csv` | manual, poucas vezes por ano |
 | PNIPE | `data/ref/*.csv` (instituições e laboratórios) para casar beneficiários | manual, quando o cadastro mudar |
 
-### Incluir um ano do CNPq
+### Atualizar o CNPq
 
-1. Em <http://bi.cnpq.br/painel/v2/p-fomento-cti.html>, exporte o ano.
-2. Reduza (descarta os dados pessoais e confere a soma com a linha "Total"):
+O painel <http://bi.cnpq.br/painel/v2/p-fomento-cti.html> é um workbook do Tableau Public publicado
+pelo CNPq, e o arquivo do workbook traz o extrato inteiro, de 2005 ao ano corrente.
+
+1. Baixe e reduza (descarta os dados pessoais e confere a soma de cada ano com o total do extrato).
+   O leitor do extrato não faz parte do build:
    ```
-   python -m pipeline.sources.cnpq reduce caminho/do/export.csv
+   pip install tableauhyperapi
+   python -m pipeline.sources.cnpq painel               # todos os anos
+   python -m pipeline.sources.cnpq painel --anos 2026   # só o ano corrente
    ```
-3. Faça commit de `data/raw/cnpq/<ano>.csv`. O push dispara o build e o deploy.
+2. Faça commit de `data/raw/cnpq/<ano>.csv`. O push dispara o build e o deploy.
+
+Um export anual do painel (UTF-16, com a linha "Total") também serve:
+`python -m pipeline.sources.cnpq reduce caminho/do/export.csv`.
 
 ### Atualizar o retrato da plataforma
 
