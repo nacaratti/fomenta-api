@@ -23,6 +23,7 @@ from api.elos import elos as elos_router  # noqa: E402
 from api.obras import ROUTERS as OBRAS  # noqa: E402
 from api.auxilios import ROUTERS as AUXILIOS  # noqa: E402
 from api.perfis import ROUTERS as PERFIS  # noqa: E402
+from api.indicadores import ROUTERS as INDICADORES  # noqa: E402
 from api.plataforma import ROUTERS  # noqa: E402
 
 DESCRIPTION = """
@@ -114,5 +115,5 @@ app.include_router(instituicoes)
 for _r in ROUTERS:
     app.include_router(_r)
 app.include_router(elos_router)
-for _r in (*OBRAS, *AUXILIOS, *PERFIS):
+for _r in (*OBRAS, *AUXILIOS, *PERFIS, *INDICADORES):
     app.include_router(_r)

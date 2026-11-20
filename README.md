@@ -44,6 +44,8 @@ Documentação interativa em `/v1/docs`.
 | `GET /v1/publicacoes/financiadores` · `/financiadores/{id}` | financiadores citados nas publicações; quem cada um apoiou (pesquisadores, laboratórios, nº dos processos) |
 | `GET /v1/elos/pesquisadores/{id}/publicacoes` · `/financiamentos` | publicações e financiadores de uma pessoa |
 | `GET /v1/elos/laboratorios/{id}/publicacoes` · `/financiamentos` | idem, do responsável e da equipe de um laboratório |
+| `GET /v1/laboratorios/{id}/indicadores` · `/v1/instituicoes/{cnpj}/indicadores` · `/v1/indicadores/laboratorios` | publicações, citações, FWCI (médio aparado em 10 e mediano), % no top 10% e 1%, % acesso aberto e com financiador, ODS e financiadores; posição pelo % no top 10% entre pares com 10+ publicações |
+| `GET /v1/congressos/{id}/pesquisadores` · `/v1/elos/pesquisadores/{id}/congressos` | quem da base publica nos anais do congresso (casados pela sigla e pelo nome) e o inverso |
 | `GET /v1/instituicoes/ror/{ror ou id do OpenAlex}` | a instituição no OpenAlex, a instituição-mãe, as unidades e o CNPJ do PNIPE; `/v1/instituicoes/{cnpj}` e os filtros `cnpj` de investimentos também aceitam ROR |
 | `GET /v1/financiadores` · `/financiadores/{id ou slug}` | financiadores brasileiros e a agência dos editais de cada um; um financiador com os editais abertos, auxílios por ano e modalidade, pesquisadores e laboratórios apoiados |
 | `GET /v1/auxilios` · `/auxilios/{id}` | auxílios publicados pelas agências (FAPESP, FAPEMIG, CAPES cooperação, FINEP/Funttel) ligados à base; filtros `financiador`, `ano`, `vigentes`, `cnpj`, `q`, `ordem` (recentes, valor); o detalhe traz as publicações da base e o projeto FINEP |
@@ -115,6 +117,8 @@ python tools/openalex_auxilios.py exportar auxilios.jsonl.gz  # de volta aqui, d
 python tools/coautores_perfis.py ids --saida coautores.txt.gz
 PYTHONPATH=src python <fomenta-api>/tools/coautores_perfis.py coletar coautores.txt.gz --saida coautores.jsonl.gz  # no FomentaBR
 python tools/coautores_perfis.py exportar coautores.jsonl.gz
+# indicadores e congressos <-> anais (sem coleta), depois das obras:
+python tools/indicadores_congressos.py exportar
 # perfil para editais (vetores da OpenAI, ~US$ 0,17 na primeira vez; depois só os novos):
 python tools/perfis_editais.py perfis --saida perfis.jsonl.gz
 PYTHONPATH=src python <fomenta-api>/tools/perfis_editais.py vetores perfis.jsonl.gz --pasta vetores/  # no FomentaBR

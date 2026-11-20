@@ -135,6 +135,13 @@ def client(tmp_path_factory):
              "tipo": "education", "cidade": "São Paulo", "uf": "SP", "publicacoes": 100, "mae": None},
             {"id": "I2", "ror": "https://ror.org/0406jsq08", "nome": "Hospital Universitário da USP", "siglas": [],
              "tipo": "healthcare", "cidade": "São Paulo", "uf": "SP", "publicacoes": 5, "mae": "I1"}],
+        "ind_laboratorio": [{"lab_id": 5, **{"publicacoes": 2, "citacoes": 8, "fwci_medio": 1.4, "fwci_mediano": 1.4, "pct_top10": 0.0, "pct_top1": 0.0,
+             "pct_acesso_aberto": 50.0, "pct_com_financiador": 50.0, "autores_mediana": 1.5, "desde": 2024, "ate": 2025,
+             "posicao_top10": None}}],
+        "ind_instituicao": [{"cnpj": "63025530000104", **{"publicacoes": 2, "citacoes": 8, "fwci_medio": 1.4, "fwci_mediano": 1.4, "pct_top10": 0.0, "pct_top1": 0.0,
+             "pct_acesso_aberto": 50.0, "pct_com_financiador": 50.0, "autores_mediana": 1.5, "desde": 2024, "ate": 2025,
+             "posicao_top10": None}}],
+        "congresso_veiculo": [{"congresso_id": 7, "veiculo_id": "S1", "veiculo": "Química Nova", "semelhanca": 0.6}],
         "edital_perfil": [{"call_id": 1, "situacao": "tematico"}, {"call_id": 2, "situacao": "todas_as_areas"}],
         "edital_pesquisador": [{"call_id": 1, "researcher_id": "A1", "posicao": 1, "nota": 0.31, "semelhanca": 0.6,
                                 "auxilios_da_agencia": 1, "publicacoes_da_agencia": 0}],
@@ -307,3 +314,15 @@ def test_instituicoes_por_ror(client):
     assert d["cnpj"] == "63025530000104" and [x["origem"] for x in d["openalex"]] == ["auto", "lineage"]
     assert d["elos"]["pesquisadores_da_base"] >= 1
     assert client.get("/v1/instituicoes/I2/investimentos").status_code in (200, 404)
+
+
+def test_indicadores_e_congressos(client):
+    i = client.get("/v1/laboratorios/5/indicadores").json()
+    assert i["publicacoes"] == 2 and i["ods"][0]["id"] == "3" and i["financiadores"][0]["id"] == "F1"
+    assert client.get("/v1/laboratorios/99/indicadores").status_code == 404
+    assert client.get("/v1/instituicoes/036rp1748/indicadores").json()["cnpj"] == "63025530000104"
+    assert client.get("/v1/indicadores/laboratorios", params={"minimo": 1}).json()["items"][0]["id"] == 5
+    c = client.get("/v1/congressos/7/pesquisadores").json()
+    assert c["veiculo"]["openalex"] == "S1" and c["items"][0]["id"] == "A1" and c["items"][0]["publicacoes_no_congresso"] == 1
+    e = client.get("/v1/elos/pesquisadores/A1/congressos").json()["items"]
+    assert e[0]["id"] == 7 and e[0]["publicacoes_no_veiculo"] == 1
