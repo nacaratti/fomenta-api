@@ -127,4 +127,27 @@ def researcher_congresses(researcher_id: str, request: Request, response: Respon
          "veiculo": r[5], "publicacoes_no_veiculo": r[6]} for r in rows]}
 
 
-ROUTERS = (infra, pessoas)
+# --------------------------------------------------------------------------- sinergia por citação
+sinergia = APIRouter(prefix="/v1/sinergia", tags=["Sinergia"])
+
+
+@sinergia.get("/laboratorios/{lab_id}/citacoes", summary="Laboratórios com a mesma base de conhecimento (citações)")
+def lab_citation_synergy(lab_id: int, request: Request, response: Response,
+                         so_novos: bool = Query(False, description="só pares que ainda não publicam juntos")) -> dict:
+    """Até 15 laboratórios que citam as mesmas referências (acoplamento bibliográfico: cosseno TF-IDF, a
+    referência genérica pesa pouco) e as citações diretas nos dois sentidos. Laboratórios com gente em
+    comum ficam de fora. `so_novos` mostra só quem nunca publicou junto: candidatos a parceria."""
+    guard(request, response)
+    where = "x.lab_a = ?" + (" AND NOT x.publicam_juntos" if so_novos else "")
+    rows = _all("SELECT x.lab_b, l.name, l.initials, i.initials, l.resolved_state, x.acoplamento, x.referencias_em_comum, "
+                "x.cita_b, x.citado_por_b, x.publicam_juntos FROM sinergia_citacao x "
+                "LEFT JOIN pnipe_laboratory l ON l.id = x.lab_b LEFT JOIN pnipe_institution i ON i.cnpj = l.institution_cnpj "
+                f"WHERE {where} ORDER BY x.acoplamento DESC, x.lab_b", [lab_id])
+    return {"laboratorio": lab_id, "nota": (
+        "Inferência pela base de conhecimento: referências citadas nas publicações desde 2019 do responsável e da "
+        "equipe (OpenAlex). `cita` = publicações deste laboratório que citam as do outro; `citado_por`, o inverso."),
+        "items": [{"id": r[0], "nome": r[1], "sigla": r[2], "instituicao_sigla": r[3], "uf": r[4], "acoplamento": r[5],
+                   "referencias_em_comum": r[6], "cita": r[7], "citado_por": r[8], "publicam_juntos": r[9]} for r in rows]}
+
+
+ROUTERS = (infra, pessoas, sinergia)

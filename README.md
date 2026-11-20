@@ -45,6 +45,7 @@ Documentação interativa em `/v1/docs`.
 | `GET /v1/elos/pesquisadores/{id}/publicacoes` · `/financiamentos` | publicações e financiadores de uma pessoa |
 | `GET /v1/elos/laboratorios/{id}/publicacoes` · `/financiamentos` | idem, do responsável e da equipe de um laboratório |
 | `GET /v1/laboratorios/{id}/indicadores` · `/v1/instituicoes/{cnpj}/indicadores` · `/v1/indicadores/laboratorios` | publicações, citações, FWCI (médio aparado em 10 e mediano), % no top 10% e 1%, % acesso aberto e com financiador, ODS e financiadores; posição pelo % no top 10% entre pares com 10+ publicações |
+| `GET /v1/sinergia/laboratorios/{id}/citacoes` | **inferência**: até 15 laboratórios com a mesma base de conhecimento (acoplamento bibliográfico TF-IDF, 3+ referências em comum) e as citações diretas; `so_novos=true` mostra só quem nunca publicou junto |
 | `GET /v1/congressos/{id}/pesquisadores` · `/v1/elos/pesquisadores/{id}/congressos` | quem da base publica nos anais do congresso (casados pela sigla e pelo nome) e o inverso |
 | `GET /v1/instituicoes/ror/{ror ou id do OpenAlex}` | a instituição no OpenAlex, a instituição-mãe, as unidades e o CNPJ do PNIPE; `/v1/instituicoes/{cnpj}` e os filtros `cnpj` de investimentos também aceitam ROR |
 | `GET /v1/financiadores` · `/financiadores/{id ou slug}` | financiadores brasileiros e a agência dos editais de cada um; um financiador com os editais abertos, auxílios por ano e modalidade, pesquisadores e laboratórios apoiados |
@@ -119,6 +120,9 @@ PYTHONPATH=src python <fomenta-api>/tools/coautores_perfis.py coletar coautores.
 python tools/coautores_perfis.py exportar coautores.jsonl.gz
 # indicadores e congressos <-> anais (sem coleta), depois das obras:
 python tools/indicadores_congressos.py exportar
+# sinergia por citação (~US$ 0,17; scipy no ambiente da API), depois das obras:
+PYTHONPATH=src python <fomenta-api>/tools/sinergia_citacao.py coletar elos.pkl.gz --saida refs.jsonl.gz  # no FomentaBR
+python tools/sinergia_citacao.py exportar refs.jsonl.gz
 # perfil para editais (vetores da OpenAI, ~US$ 0,17 na primeira vez; depois só os novos):
 python tools/perfis_editais.py perfis --saida perfis.jsonl.gz
 PYTHONPATH=src python <fomenta-api>/tools/perfis_editais.py vetores perfis.jsonl.gz --pasta vetores/  # no FomentaBR

@@ -142,6 +142,8 @@ def client(tmp_path_factory):
              "pct_acesso_aberto": 50.0, "pct_com_financiador": 50.0, "autores_mediana": 1.5, "desde": 2024, "ate": 2025,
              "posicao_top10": None}}],
         "congresso_veiculo": [{"congresso_id": 7, "veiculo_id": "S1", "veiculo": "Química Nova", "semelhanca": 0.6}],
+        "sinergia_citacao": [{"lab_a": 5, "lab_b": 6, "acoplamento": 0.4, "referencias_em_comum": 12, "cita_b": 3,
+                              "citado_por_b": 0, "publicam_juntos": False}],
         "edital_perfil": [{"call_id": 1, "situacao": "tematico"}, {"call_id": 2, "situacao": "todas_as_areas"}],
         "edital_pesquisador": [{"call_id": 1, "researcher_id": "A1", "posicao": 1, "nota": 0.31, "semelhanca": 0.6,
                                 "auxilios_da_agencia": 1, "publicacoes_da_agencia": 0}],
@@ -326,3 +328,10 @@ def test_indicadores_e_congressos(client):
     assert c["veiculo"]["openalex"] == "S1" and c["items"][0]["id"] == "A1" and c["items"][0]["publicacoes_no_congresso"] == 1
     e = client.get("/v1/elos/pesquisadores/A1/congressos").json()["items"]
     assert e[0]["id"] == 7 and e[0]["publicacoes_no_veiculo"] == 1
+
+
+def test_sinergia_por_citacao(client):
+    d = client.get("/v1/sinergia/laboratorios/5/citacoes").json()
+    assert d["items"][0]["id"] == 6 and d["items"][0]["cita"] == 3 and d["items"][0]["publicam_juntos"] is False
+    assert client.get("/v1/sinergia/laboratorios/5/citacoes", params={"so_novos": True}).json()["items"][0]["id"] == 6
+    assert client.get("/v1/sinergia/laboratorios/6/citacoes").json()["items"] == []
