@@ -148,13 +148,40 @@ def researcher_coauthors(researcher_id: str, request: Request, response: Respons
             **_coauthors(researcher_id, per_page, (page - 1) * per_page)}
 
 
+def _affinity_on_demand(rid: str, limit: int = 20) -> list[tuple]:
+    """Cosseno entre os vetores de temas (peso = publicações no tema), só com quem compartilha algum tema e
+    nunca publicou com a pessoa. Nada é guardado: calcular para todos ocuparia ~4 milhões de pares."""
+    return _all(
+        "WITH me AS (SELECT topic_id, n FROM elos_researcher_topic WHERE researcher_id = ?), "
+        "co AS (SELECT CASE WHEN a = ? THEN b ELSE a END AS other FROM elos_edge "
+        "       WHERE tipo = 'coautoria' AND (a = ? OR b = ?)), "
+        "cand AS (SELECT rt.researcher_id AS other, sum(rt.n * me.n) AS dot, count(*) AS comuns "
+        "         FROM elos_researcher_topic rt JOIN me USING (topic_id) "
+        "         WHERE rt.researcher_id <> ? AND rt.researcher_id NOT IN (SELECT other FROM co) GROUP BY 1), "
+        "norm AS (SELECT researcher_id AS other, sqrt(sum(n * n)) AS nn FROM elos_researcher_topic "
+        "         WHERE researcher_id IN (SELECT other FROM cand) GROUP BY 1) "
+        f"SELECT {_rcols('o')}, round(c.dot / (n.nn * (SELECT sqrt(sum(n * n)) FROM me)), 4) AS peso "
+        "FROM cand c JOIN norm n USING (other) JOIN elos_researcher o ON o.id = c.other "
+        "ORDER BY peso DESC, c.comuns DESC, o.ultimo_ano DESC NULLS LAST, o.publicacoes DESC NULLS LAST, o.id "
+        "LIMIT ?", [rid] * 5 + [limit])
+
+
 @elos.get("/pesquisadores/{researcher_id}/afinidades",
           summary="Quem pesquisa temas parecidos e ainda não publicou junto")
 def researcher_affinity(researcher_id: str, request: Request, response: Response) -> dict:
+    """Para os responsáveis de laboratório, as afinidades pré-calculadas no build. Para os demais, o mesmo
+    cosseno calculado na hora (`calculo: sob_demanda`): com poucos temas, muita gente empata, e a lista é
+    uma estimativa mais grosseira."""
     guard(request, response)
     rows = _all(f"SELECT {_rcols('o')}, e.peso FROM (SELECT CASE WHEN a = ? THEN b ELSE a END AS other, peso "
                 "FROM elos_edge WHERE tipo = 'afinidade' AND (a = ? OR b = ?)) e "
                 "JOIN elos_researcher o ON o.id = e.other ORDER BY e.peso DESC LIMIT 20", [researcher_id] * 3)
+    calculo = "pre_calculada"
+    if not rows:
+        if not _one("SELECT 1 FROM elos_researcher WHERE id = ?", [researcher_id]):
+            raise HTTPException(404, "Pesquisador não encontrado.")
+        rows = _affinity_on_demand(researcher_id)
+        calculo = "sob_demanda"
     mine = [x[0] for x in _all("SELECT topic_id FROM elos_researcher_topic WHERE researcher_id = ? ORDER BY n DESC",
                                [researcher_id])]
     names = dict(_all("SELECT id, nome FROM elos_topic WHERE list_contains(?, id)", [mine])) if mine else {}
@@ -163,8 +190,11 @@ def researcher_affinity(researcher_id: str, request: Request, response: Response
         for oid, tid in _all("SELECT researcher_id, topic_id FROM elos_researcher_topic "
                              "WHERE list_contains(?, researcher_id)", [[x[0] for x in rows]]):
             theirs.setdefault(oid, set()).add(tid)
-    return {"pesquisador": researcher_id,
-            "nota": "Afinidade: cosseno entre os temas das publicações recentes, entre responsáveis que nunca publicaram juntos.",
+    nota = ("Afinidade: cosseno entre os temas das publicações recentes, entre responsáveis que nunca publicaram juntos."
+            if calculo == "pre_calculada" else
+            "Afinidade estimada na hora: cosseno entre os temas das publicações recentes, com quem nunca publicou junto. "
+            "Com poucos temas, muitas pessoas empatam; no empate, vêm primeiro mais temas em comum e atividade recente.")
+    return {"pesquisador": researcher_id, "calculo": calculo, "nota": nota,
             "items": [{**_res(x[:N_R]), "afinidade": x[N_R],
                        "temas_em_comum": [names.get(t, t) for t in mine if t in theirs.get(x[0], set())][:3]}
                       for x in rows]}

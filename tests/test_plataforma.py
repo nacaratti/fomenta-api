@@ -75,14 +75,20 @@ def make_client(tmp_path_factory):
                             {"id": "A2", "openalex_ids": ["A2"], "orcid": None, "nome": "Bruno Lima", "inst_cnpj": None,
                              "publicacoes": 3, "citacoes": 1, "h_index": 1, "desde_2019": 1, "ultimo_ano": 2024,
                              "grandes_areas": ["1"], "atualizado_em": PAST, "origem": "coautor",
-                             "instituicao_openalex": "I9", "instituicao_nome": "Universidad de Chile", "instituicao_sigla": None, "instituicao_pais": "CL"}],
+                             "instituicao_openalex": "I9", "instituicao_nome": "Universidad de Chile", "instituicao_sigla": None, "instituicao_pais": "CL"},
+                            {"id": "A3", "openalex_ids": ["A3"], "orcid": None, "nome": "Carla Souza", "inst_cnpj": None,
+                             "publicacoes": 4, "citacoes": 2, "h_index": 1, "desde_2019": 2, "ultimo_ano": 2025,
+                             "grandes_areas": ["1"], "atualizado_em": PAST, "origem": "outro",
+                             "instituicao_openalex": "I8", "instituicao_nome": "Universidade Federal do Pará", "instituicao_sigla": "UFPA", "instituicao_pais": "BR"}],
         "elos_researcher_lab": [{"researcher_id": "A1", "lab_id": 5, "papel": "responsavel", "confianca": 1.0,
                                  "responsavel_id": None, "publicacoes_em_comum": None, "ultimo_ano": None, "obras": None,
                                  "anos_em_comum": None, "colaborador_estavel": None},
                                 {"researcher_id": "A2", "lab_id": 5, "papel": "coautor", "confianca": 1.0,
                                  "responsavel_id": "A1", "publicacoes_em_comum": 2, "ultimo_ano": 2024,
                                  "obras": ["W2", "W1"], "anos_em_comum": 2, "colaborador_estavel": True}],
-        "elos_researcher_topic": [{"researcher_id": "A1", "topic_id": "T1", "n": 3}],
+        "elos_researcher_topic": [{"researcher_id": "A1", "topic_id": "T1", "n": 3},
+                                  {"researcher_id": "A2", "topic_id": "T1", "n": 1},
+                                  {"researcher_id": "A3", "topic_id": "T1", "n": 2}],
         "elos_topic": [{"id": "T1", "nome": "Mass Spectrometry", "subarea": "s", "area": "a", "dominio": "d",
                         "field_id": 1, "grande_area": "1"}],
         "elos_edge": [{"a": "A1", "b": "A2", "tipo": "coautoria", "peso": 2.0, "ultimo_ano": 2024, "obras": ["W2", "W1"]}],
@@ -350,3 +356,12 @@ def test_sinergia_por_citacao(client):
     assert d["items"][0]["id"] == 6 and d["items"][0]["cita"] == 3 and d["items"][0]["publicam_juntos"] is False
     assert client.get("/v1/sinergia/laboratorios/5/citacoes", params={"so_novos": True}).json()["items"][0]["id"] == 6
     assert client.get("/v1/sinergia/laboratorios/6/citacoes").json()["items"] == []
+
+
+def test_afinidade_sob_demanda(client):
+    """Sem afinidade pré-calculada, a API calcula na hora e deixa de fora quem já publicou junto."""
+    a = client.get("/v1/elos/pesquisadores/A2/afinidades").json()
+    assert a["calculo"] == "sob_demanda"
+    assert [x["id"] for x in a["items"]] == ["A3"]  # A1 é coautora de A2
+    assert a["items"][0]["afinidade"] == 1.0 and a["items"][0]["temas_em_comum"] == ["Mass Spectrometry"]
+    assert client.get("/v1/elos/pesquisadores/X/afinidades").status_code == 404
