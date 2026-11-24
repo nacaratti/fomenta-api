@@ -15,8 +15,8 @@ def _write(d, name, rows):
     pq.write_table(pa.Table.from_pylist(rows), d / f"{name}.parquet")
 
 
-@pytest.fixture(scope="module")
-def client(tmp_path_factory):
+def make_client(tmp_path_factory):
+    """TestClient sobre o retrato mínimo, sem chave (plano Aberto)."""
     snap = tmp_path_factory.mktemp("snap")
     lab_areas = json.dumps([{"id": 1, "name": "Espectrometria de Massas"}], ensure_ascii=False)
     tables = {
@@ -149,6 +149,12 @@ def client(tmp_path_factory):
                                 "auxilios_da_agencia": 1, "publicacoes_da_agencia": 0}],
         "edital_laboratorio": [{"call_id": 1, "lab_id": 5, "posicao": 1, "nota": 0.3, "semelhanca_laboratorio": 0.55,
                                 "semelhanca_equipe": 0.6}],
+        "newsletter_edicao": [
+            {"id": 3, "edition_date": PAST.date(), "subject": "Editais de outubro", "markdown": "## Editais\n**FAPEMIG**: [Chamada](http://x) aberta.",
+             "html": "<html><head><style>p{}</style></head><body><p>FomentaBR · Newsletter mensal</p><p>Edição de 05/10/2026</p><p>Editais da <b>FAPEMIG</b> &amp; congressos.</p></body></html>", "call_ids": "[1, 2]", "conference_ids": "[7]", "send_completed_at": PAST},
+            {"id": 4, "edition_date": FUTURE.date(), "subject": "Editais de dezembro", "markdown": "Texto",
+             "html": "<p>Dezembro</p>", "call_ids": "[]", "conference_ids": "[]", "send_completed_at": FUTURE},
+        ],
     }
     for name, rows in tables.items():
         _write(snap, name, rows)
@@ -173,6 +179,15 @@ def client(tmp_path_factory):
     queries._connection.cache_clear()
     queries._search_path.cache_clear()
     return TestClient(index.app)
+
+
+@pytest.fixture(scope="module")
+def client(tmp_path_factory):
+    # editais só com chave que tenha a permissão (ver tests/conftest.py)
+    from tests.conftest import EDITAIS_KEY
+    c = make_client(tmp_path_factory)
+    c.headers["Authorization"] = f"Bearer {EDITAIS_KEY}"
+    return c
 
 
 def test_editais(client):

@@ -85,7 +85,7 @@ def get_funder(financiador: str, request: Request, response: Response,
     """`financiador` é o id do OpenAlex (F…) ou o slug da agência (`fapesp`, `cnpq`…). Junta os editais
     abertos da agência no Fomenta, os auxílios publicados por ela com gente da base e os pesquisadores
     e laboratórios mais apoiados (por auxílio ou por publicação que cita o financiador)."""
-    guard(request, response)
+    cliente = guard(request, response)
     fid = _funder_id(financiador)
     f = _one("SELECT f.id, f.nome, f.ror, f.crossref, f.auxilios, f.publicacoes, g.agencia, a.name, a.id "
              "FROM oa_funder_br f LEFT JOIN oa_funder_agencia g ON g.funder_id = f.id "
@@ -93,9 +93,12 @@ def get_funder(financiador: str, request: Request, response: Response,
     if not f:
         raise HTTPException(404, "Financiador brasileiro não encontrado (use o id F… ou o slug da agência).")
     now = datetime.now(UTC).replace(tzinfo=None)
+    # Editais só para quem tem a permissão (chave institucional); a resposta com eles não vai para o cache.
     abertos = _all(f"SELECT {EDITAL_COLS} FROM edital e JOIN agencia a ON a.id = e.agency_id "
                    "WHERE e.agency_id = ? AND e.submission_deadline >= ? ORDER BY e.submission_deadline, e.id LIMIT ?",
-                   [f[8], now, limite]) if f[8] else []
+                   [f[8], now, limite]) if f[8] and cliente.editais else []
+    if cliente.editais:
+        response.headers["Cache-Control"] = "private, no-store"
     by_year = _all("SELECT ano, count(*), count(valor), sum(valor) FILTER (WHERE moeda = 'BRL') FROM oa_auxilio "
                    "WHERE funder_id = ? AND ano IS NOT NULL GROUP BY 1 ORDER BY 1", [fid])
     modal = _all("SELECT modalidade, count(*) n FROM oa_auxilio WHERE funder_id = ? AND modalidade IS NOT NULL "

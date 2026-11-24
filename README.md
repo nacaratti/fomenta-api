@@ -79,6 +79,50 @@ Somente GET, CORS aberto, `Cache-Control` de 1 dia na CDN (o dado só muda a cad
 120 requisições por minuto por IP. Valores **nominais**; **não some financiadores diferentes**
 (parte do FNDCT passa pela FINEP e pelo CNPq).
 
+## Acesso, planos e proteção contra raspagem
+
+Planos em `api/planos.py` (rota `/v1/planos`): **Aberto** (sem chave, por IP: 60/min, 2.000/dia, até 50 itens
+por página e 1.000 registros por consulta), **Pesquisa**, **Profissional** e **Institucional**. A chave vai em
+`Authorization: Bearer fmt_...` ou `X-API-Key`; respostas trazem `X-Plano` e `X-RateLimit-*`.
+
+- **Editais ficam fora da API pública.** As rotas `/v1/editais...` e `/v1/elos/*/{id}/editais` respondem 403, a
+  não ser para o site oficial (token de `POST /v1/sessao`, preso ao IP, 30 min, só para as origens de
+  `FOMENTA_SITE_ORIGINS`) ou para chaves criadas com `--editais`. Sem cache público e com `noindex`.
+- Respostas que só uma chave pode pedir saem com `no-store` (a CDN não as entrega a anônimos).
+- `/robots.txt` proíbe robôs (inclusive de IA) nas rotas de editais.
+- **MCP** para assistentes de IA em `POST /mcp` (sem as ferramentas de editais para o público).
+
+Variáveis de ambiente na Vercel:
+
+| Variável | Para quê |
+|---|---|
+| `FOMENTA_API_KEYS` | JSON com o SHA-256 de cada chave (`python tools/api_keys.py criar ...`) |
+| `FOMENTA_SITE_ORIGINS` | origens do site, separadas por vírgula (ex.: `https://fomentabr.org`) |
+| `FOMENTA_SITE_SECRET` | segredo para assinar a sessão do site (obrigatório em produção) |
+| `UPSTASH_REDIS_REST_URL` / `UPSTASH_REDIS_REST_TOKEN` | contadores compartilhados entre instâncias e inscrições dos avisos (Upstash Redis pela Vercel Marketplace); sem eles, conta em memória e os avisos ficam desligados |
+| `VAPID_PUBLIC_KEY` | chave pública dos avisos de editais (`tools/notificar_editais.py chaves`) |
+
+### Avisos de editais (notificações)
+
+No site, "Receber avisos" (laboratório, pesquisador ou agência) inscreve o aparelho no Web Push e manda a
+inscrição para `/v1/avisos/inscricao` (só aceita o site e os serviços de push dos navegadores; não guarda
+nome, e-mail nem IP). A cada build, `tools/notificar_editais.py enviar` cruza os editais abertos e descobertos
+nos últimos 14 dias com o que cada aparelho segue (agência, ou perfil para edital do laboratório/pesquisador),
+manda no máximo três avisos por aparelho, sem repetir edital, e apaga inscrições canceladas pelo navegador.
+
+Para ativar:
+
+1. `python tools/notificar_editais.py chaves` gera o par VAPID (uma vez só).
+2. Vercel (API): `VAPID_PUBLIC_KEY` e o Upstash Redis (`UPSTASH_REDIS_REST_URL` / `_TOKEN`), onde ficam as inscrições.
+3. GitHub (Settings > Secrets > Actions): `VAPID_PRIVATE_KEY`, `VAPID_PUBLIC_KEY`, `VAPID_CONTATO` (e-mail) e as
+   duas do Upstash. Sem eles, o passo "Avisos de editais" do workflow é pulado.
+
+Teste sem enviar: `python tools/notificar_editais.py enviar --simular`. Os avisos saem no ritmo do build
+(hoje, segunda-feira e a cada push); para avisar mais cedo, rode o workflow depois de atualizar o retrato.
+
+Recomendado no painel da Vercel (Firewall): uma regra de limite por IP em `/v1/editais` e `/v1/sessao` e outra
+mais folgada em `/v1/*`, para barrar rajadas antes de a função rodar.
+
 ## Fontes
 
 | Fonte | Como entra | Atualização |

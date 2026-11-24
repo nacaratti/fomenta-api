@@ -92,6 +92,12 @@ QUERIES: list[tuple[str, str]] = [
         SELECT lab_a, lab_b, coautorias,
                ARRAY(SELECT p FROM unnest(pessoas) p WHERE p NOT IN (SELECT id FROM fora)) AS pessoas
         FROM elos_lab_link"""),
+    # Edições da newsletter já enviadas por e-mail (o arquivo público do site). O HTML guardado é o
+    # genérico: o link de descadastro de cada assinante só entra no momento do envio.
+    ("newsletter_edicao", """
+        SELECT id, edition_date, subject, markdown, html, call_ids, conference_ids, send_completed_at
+        FROM newsletter_edition WHERE channel::text = 'email'
+          AND (status::text = 'sent' OR coalesce(sent_success_count, 0) > 0)"""),
 ]
 
 

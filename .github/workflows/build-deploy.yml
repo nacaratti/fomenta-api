@@ -53,6 +53,15 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: gh release download snapshot-plataforma -D build/snapshot --clobber
 
+      # Edições da newsletter já enviadas, do painel /admin do FomentaBR, para o arquivo público do
+      # site. Sem o segredo FOMENTABR_ADMIN_TOKEN, ficam as que já estão no retrato.
+      - name: Edições da newsletter
+        env:
+          FOMENTABR_ADMIN_TOKEN: ${{ secrets.FOMENTABR_ADMIN_TOKEN }}
+        run: |
+          if [ -z "$FOMENTABR_ADMIN_TOKEN" ]; then echo "Sem FOMENTABR_ADMIN_TOKEN; pulando."; exit 0; fi
+          python tools/newsletter_fomentabr.py
+
       - name: Build dos dados (baixa FINEP e CAPES)
         run: python -m pipeline.build
 
@@ -95,3 +104,18 @@ jobs:
           git add -A
           git commit -q -m "deploy: dados de $(date -u +%Y-%m-%d) (código ${GITHUB_SHA::7})"
           git push -q -f "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" deploy
+
+      # Avisos de editais novos (Web Push) para quem segue agências, laboratórios ou
+      # pesquisadores no site. Sem os segredos VAPID e do Redis, o passo não faz nada.
+      - name: Avisos de editais
+        env:
+          VAPID_PRIVATE_KEY: ${{ secrets.VAPID_PRIVATE_KEY }}
+          VAPID_PUBLIC_KEY: ${{ secrets.VAPID_PUBLIC_KEY }}
+          VAPID_CONTATO: ${{ secrets.VAPID_CONTATO }}
+          UPSTASH_REDIS_REST_URL: ${{ secrets.UPSTASH_REDIS_REST_URL }}
+          UPSTASH_REDIS_REST_TOKEN: ${{ secrets.UPSTASH_REDIS_REST_TOKEN }}
+        run: |
+          if [ -z "$VAPID_PRIVATE_KEY" ] || [ -z "$UPSTASH_REDIS_REST_URL" ]; then
+            echo "Avisos não configurados (VAPID ou Redis); pulando."; exit 0
+          fi
+          python tools/notificar_editais.py enviar
