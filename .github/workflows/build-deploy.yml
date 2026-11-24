@@ -2,13 +2,15 @@ name: build-deploy
 
 # Monta o fomenta.duckdb a partir das fontes oficiais, publica os dados numa
 # Release e publica a branch `deploy`, que a Vercel (conta própria da API) põe no ar.
+# Por enquanto só roda à mão (botão "Run workflow" ou `gh workflow run build-deploy.yml`).
+# Para voltar ao automático, descomente schedule e push.
 on:
-  schedule:
-    - cron: "0 9 * * 1"   # segunda, 06:00 em Brasília (a FINEP atualiza toda semana)
   workflow_dispatch:
-  push:
-    branches: [main]
-    paths: ["data/**", "pipeline/**", "api/**", "vercel.json", "requirements*.txt"]
+  # schedule:
+  #   - cron: "0 9 * * 1"   # segunda, 06:00 em Brasília (a FINEP atualiza toda semana)
+  # push:
+  #   branches: [main]
+  #   paths: ["data/**", "pipeline/**", "api/**", "vercel.json", "requirements*.txt"]
 
 permissions:
   contents: write   # criar a Release de dados
