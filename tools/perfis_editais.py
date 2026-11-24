@@ -24,6 +24,7 @@ from __future__ import annotations
 import argparse
 import gzip
 import json
+import re
 import sys
 from array import array
 from datetime import UTC, datetime
@@ -39,6 +40,27 @@ ATIVO_DESDE = 2022
 BONUS_FINANCIADO = 0.02
 HUB_K = 10  # CSLS: desconta a semelhança média de cada pessoa com os 10 editais mais próximos dela
 AREAS_GENERICO = 5  # a partir de quantas áreas do conhecimento o edital é "todas as áreas"
+# Temas livres que descrevem o formato do edital, não um assunto de pesquisa: não contam como tema.
+TEMA_FORMATO = re.compile(
+    r"todas|evento|divulga|jornalis|infraestrutura|manuten|equipamento|p[óo]s-gradua|forma[çc][ãa]o|recursos humanos|"
+    r"inova[çc][ãa]o|empreend|empresa|coopera|internacional|extens[ãa]o|desenvolvimento tecnol|bolsa|interc[âa]mbio|"
+    r"fixa[çc]|mobilidade|populariza|publica[çc]|livro|inicia[çc][ãa]o|startup|govtech|estrat[ée]gic|eixo|priorit|"
+    r"colabora|ensino|educa[çc][ãa]o|capacita|treinamento|doutor|mestr|pesquisador|qualquer|ct&i|gest[ãa]o|avalia|"
+    r"consultor|regional|territor|redes|cultura cient|premia|difus|subven|centelha|parque|ambientes|ecossistemas de|"
+    r"observat|indicadores|pesquisa aplicada|pesquisa orientada|cidadania|planejamento|governan|servi[çc]os p[úu]blicos|"
+    r"horizon|erc|laborat[óo]rios multiusu|deep tech|acelera|valida[çc][ãa]o|propin|tecnova|apresenta[çc][ãa]o",
+    re.IGNORECASE)
+
+
+def tema_especifico(temas: list[str]) -> bool:
+    """O classificador de áreas do FomentaBR marca como "Todas as áreas" desafios bem temáticos (os da
+    Petrobras, o Biota da FAPESP). Os temas livres extraídos do edital desempatam: se mais da metade descreve
+    um assunto de pesquisa, e não o formato (eventos, bolsas, infraestrutura, gestão), o edital é temático."""
+    if any(re.search(r"todas", t, re.IGNORECASE) for t in temas):
+        return False
+    itens = [t for t in temas if t.strip()]
+    assunto = [t for t in itens if not TEMA_FORMATO.search(t)]
+    return bool(itens) and len(assunto) * 2 > len(itens)  # mais da metade dos temas é assunto de pesquisa
 # UF de cada FAP (slug da agência dos editais).
 UF_FAP = {
     "fapesp": "SP", "facepe": "PE", "fapern": "RN", "fapema": "MA", "fapdf": "DF", "faperj": "RJ", "fapesb": "BA",
@@ -216,9 +238,13 @@ def exportar(pasta: Path) -> None:
                                    f"WHERE wf.funder_id IN (SELECT funder_id FROM '{s}/oa_funder_agencia.parquet') "
                                    "GROUP BY ALL").fetchall():
         pub[(fid, rid)] = n
-    genericos = {r[0] for r in con.execute(
-        f"SELECT ea.call_id FROM '{s}/edital_area.parquet' ea JOIN '{s}/area_conhecimento.parquet' k ON k.id = ea.area_id "
-        f"GROUP BY 1 HAVING bool_or(k.name = 'Todas as áreas') OR count(*) >= {AREAS_GENERICO}").fetchall()}
+    temas_livres = {r[0]: json.loads(r[1]) if r[1] else [] for r in con.execute(
+        f"SELECT id, json_extract_string(extraction_metadata, '$.knowledge_areas_freetext') FROM '{s}/edital.parquet'"
+    ).fetchall()}
+    genericos = {cid for cid, todas, n in con.execute(
+        f"SELECT ea.call_id, bool_or(k.name = 'Todas as áreas'), count(*) FROM '{s}/edital_area.parquet' ea "
+        f"JOIN '{s}/area_conhecimento.parquet' k ON k.id = ea.area_id GROUP BY 1").fetchall()
+        if n >= AREAS_GENERICO or (todas and not tema_especifico(temas_livres.get(cid, [])))}
     equipe: dict[int, list[int]] = {}
     p_index = {rid: i for i, rid in enumerate(p_ids)}
     for lab, rid in con.execute(f"SELECT lab_id, researcher_id FROM '{s}/elos_researcher_lab.parquet' "
